@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["andrew.culver@gmail.com"]
   s.homepage    = "http://github.com/andrewculver/koudoku"
   s.summary     = %q{Robust subscription support for Rails with Stripe.}
-  s.description = %q{Provides package levels, coupons, logging, notifications, etc.}
+  s.description = %q{Robust subscription support for Rails with Stripe. Provides package levels, coupons, logging, notifications, etc.}
 
   s.rubyforge_project = "koudoku"
 
