@@ -1,0 +1,188 @@
+module Koudoku::Subscription
+  extend ActiveSupport::Concern
+
+  included do
+
+    attr_accessible :plan_id, :stripe_id, :current_price
+
+    # We don't store these one-time use tokens, but this is what Strie provides
+    # client-side after storing the credit card information.
+    attr_accessor :credit_card_token
+
+    belongs_to :plan
+
+    # update details.
+    before_save do
+
+      # if their package level has changed ..
+      if changing_plans? 
+
+        prepare_for_plan_change
+
+        # and a customer exists in stripe ..
+        if stripe_id.present?
+
+          # fetch the customer.
+          customer = Stripe::Customer.retrieve(self.stripe_id)
+
+          # if a new plan has been selected
+          if self.plan.present?
+
+            # Record the new plan pricing.
+            self.current_price = self.plan.price
+
+            prepare_for_downgrade if downgrading?
+            prepare_for_upgrade if upgrading?
+
+            # update the package level with stripe.
+            customer.update_subscription(:plan => self.plan.stripe_id)
+
+            finalize_downgrade! if downgrading?
+            finalize_upgrade! if upgrading?
+
+          # if no plan has been selected.
+          else
+
+            prepare_for_cancelation
+
+            # Remove the current pricing.
+            self.current_price = nil
+
+            # delete the subscription.
+            customer.cancel_subscription
+
+            finalize_cancelation!
+
+          end
+
+        # otherwise
+        else
+
+          # if a new plan has been selected
+          if self.plan.present?
+
+            # Record the new plan pricing.
+            self.current_price = self.plan.price
+
+            prepare_for_new_subscription
+            prepare_for_upgrade
+
+            begin
+
+              customer_attributes = {
+                description: subscription_owner_description,
+                card: credit_card_token, # obtained with Stripe.js
+                plan: plan.stripe_id
+              }
+
+              # If the class we're being included in supports coupons ..
+              if respond_to? :coupon
+                if coupon.present? and coupon.free_trial?
+                  customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
+                end
+              end
+
+              # create a customer at that package level.
+              customer = Stripe::Customer.create(customer_attributes)
+
+            rescue Stripe::CardError => card_error
+              errors[:base] << card_error.message
+              card_was_declined
+              return false
+            end
+
+            # store the customer id.
+            self.stripe_id = customer.id
+            self.last_four = customer.active_card.last4
+
+            finalize_new_subscription!
+            finalize_upgrade!
+
+          else
+
+            # This should never happen.
+
+            self.plan_id = nil
+
+            # Remove any plan pricing.
+            self.current_price = nil
+
+          end
+
+        end
+
+        finalize_plan_change!
+
+      end
+
+    end
+
+  end
+
+  module ClassMethods
+  end
+
+  module InstanceMethods
+
+    # Pretty sure this wouldn't conflict with anything someone would put in their model
+    def subscription_owner
+      # Return whatever we belong to.
+      # If this object doesn't respond to 'name', please update owner_description.
+      user
+    end
+
+    def subscription_owner_description
+      # assuming owner responds to name.
+      # we should check for whether it responds to this or not.
+      "#{subscription_owner.name} (#{subscription_owner.id})"
+    end
+
+    def changing_plans?
+      plan_id_changed?
+    end
+
+    def downgrading?
+      plan.present? and plan_id_was.present? and plan_id_was > self.plan_id
+    end
+
+    def upgrading?
+      (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
+    end
+
+    # Template methods.
+    def prepare_for_plan_change
+    end
+
+    def prepare_for_new_subscription
+    end
+
+    def prepare_for_upgrade
+    end
+
+    def prepare_for_downgrade
+    end
+
+    def prepare_for_cancelation
+    end
+
+    def finalize_plan_change!
+    end
+
+    def finalize_new_subscription!
+    end
+
+    def finalize_upgrade!
+    end
+
+    def finalize_downgrade!
+    end
+
+    def finalize_cancelation!
+    end
+
+    def card_was_declined
+    end
+
+  end
+
+end
