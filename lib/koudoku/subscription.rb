@@ -182,6 +182,16 @@ module Koudoku::Subscription
 
     def card_was_declined
     end
+    
+    # stripe web-hook callbacks.
+    def payment_succeeded(amount)
+    end
+    
+    def charge_failed
+    end
+    
+    def charge_disputed
+    end
 
   end
 
