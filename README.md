@@ -41,9 +41,9 @@ The `stripe_id` for each plan must match the ID from Stripe. The price here isn'
 
 You'll need to create a few plans to start. (You don't need to create a plan to represent "free" accounts.)
 
-    Plan.create(name: 'Personal', price: '10.00')
-    Plan.create(name: 'Team', price: '30.00')
-    Plan.create(name: 'Enterprise', price: '100.00')
+    Plan.create(name: 'Personal', price: 10.00)
+    Plan.create(name: 'Team', price: 30.00)
+    Plan.create(name: 'Enterprise', price: 100.00)
 
 ### Coupons
 
