@@ -26,7 +26,6 @@ class Koudoku::WebhooksController < ActionController::Base
     
       stripe_id = data_json['data']['object']['customer']
     
-      puts "Finding listing with Stripe ID #{stripe_id}"
       subscription = Subscription.find_by_stripe_id(stripe_id)
       listing = subscription.listing
       subscription.charge_disputed
