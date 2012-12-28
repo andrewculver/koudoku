@@ -8,9 +8,15 @@ Include the following in your `Gemfile`:
 
     gem 'koudoku'
     
-After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be "`user`".)
+After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
     rails g koudoku:install user
+    
+After installing, you'll need to add some subscription plans.
+
+    Plan.create(name: 'Personal', price: 10.00)
+    Plan.create(name: 'Team', price: 30.00)
+    Plan.create(name: 'Enterprise', price: 100.00)
 
 ## Using Coupons
 
@@ -26,7 +32,7 @@ Then assign it to a _new_ subscription before saving:
     
 ## Implementing Logging, Notifications, etc.
 
-The included module defined the following empty "template methods" which you're able to provide an implementation for:
+The included module defines the following empty "template methods" which you're able to provide an implementation for in `Subscription`:
 
  - `prepare_for_plan_change`
  - `prepare_for_new_subscription`
@@ -46,10 +52,12 @@ Between `prepare_for_*` and `finalize_*`, so far I've used `finalize_*` almost e
 
 ### Stripe Webhooks
 
-Support for Stripe Webhooks is still quite limited. To react to some of the webhooks that are currently handled, you can implement the following template methods of the `Subscription` class:
+During the installation process, a path and API key will be printed out that you can configure in the Stripe account panel that will allow your application to receive information about recurring transactions as they happen. (These are useful for reacting to expired credit cards on file and revenue tracking.)
+
+Support for Stripe Webhooks is still quite limited. You can implement the following template methods of the `Subscription`:
 
   - `payment_succeeded(amount)`
   - `charge_failed`
   - `charge_disputed`
   
-No additional information is currently handled from the webhook request body.
+As mentioned before, be sure to call `super` in your implementations. No additional information from Stripe is currently handled from the webhook request body.
