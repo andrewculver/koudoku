@@ -1,7 +1,9 @@
-# -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
+
+# Maintain your gem's version:
 require "koudoku/version"
 
+# Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "koudoku"
   s.version     = Koudoku::VERSION
@@ -11,14 +13,11 @@ Gem::Specification.new do |s|
   s.summary     = %q{Robust subscription support for Rails with Stripe.}
   s.description = %q{Robust subscription support for Rails with Stripe. Provides package levels, coupons, logging, notifications, etc.}
 
-  s.rubyforge_project = "koudoku"
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.test_files = Dir["test/**/*"]
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ["lib"]
-
-  s.add_dependency "rails"
+  s.add_dependency "rails", "~> 3.2.10"
   s.add_dependency "stripe"
-  
+
+  s.add_development_dependency "sqlite3"
 end
