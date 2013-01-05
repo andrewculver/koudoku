@@ -11,22 +11,19 @@ class Koudoku::WebhooksController < ActionController::Base
       
       stripe_id = data_json['data']['object']['customer']
       amount = data_json['data']['object']['total'].to_f / 100.0
-      subscription = ::Subscription.find_by_stripe_id(stripe_id)
+      subscription = Subscription.find_by_stripe_id(stripe_id)
       subscription.payment_succeeded(amount)
     
     elsif data_json['type'] == "charge.failed"
     
       stripe_id = data_json['data']['object']['customer']
-      
-      subscription = ::Subscription.find_by_stripe_id(stripe_id)
+      subscription = Subscription.find_by_stripe_id(stripe_id)
       subscription.charge_failed
     
     elsif data_json['type'] == "charge.dispute.created"
     
       stripe_id = data_json['data']['object']['customer']
-    
-      subscription = ::Subscription.find_by_stripe_id(stripe_id)
-      listing = subscription.listing
+      subscription = Subscription.find_by_stripe_id(stripe_id)
       subscription.charge_disputed
       
     end
