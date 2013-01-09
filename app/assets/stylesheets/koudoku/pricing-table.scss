@@ -1,0 +1,77 @@
+ul.koudoku-pricing-table {
+
+  position: relative;
+  margin: 20px 0;
+  margin-left: 25px;
+  
+
+  li.plan {
+
+    text-align: center;
+
+    background-color: #f5f5f5;
+    margin-top: 17px;
+
+    margin-left: 0;
+
+    position: relative;
+    z-index: 99;
+    
+
+    &.plan-primary {
+      background-color: #f9f9f9;
+      margin-top: 0px;
+      
+      margin-left: -5px;
+      margin-right: -5px;
+      
+      z-index: 100;
+      
+      h2 {
+        margin-top: 5px;
+        padding-bottom: 7px;
+        font-size: 2.5em;
+      }
+      a {
+        font-size: 2em;
+        font-size: 14pt;
+      }
+      ul.features {
+        margin-bottom: 12px;
+        li {
+          font-size: 12pt;
+        }
+      }
+    }
+  
+    .call-to-action {
+      margin: 10px 0;
+    }
+
+    .features {
+      margin: 0;
+      li {
+        list-style: none;
+        padding: 8px;
+        line-height: 18px;
+        vertical-align: top;
+        border-top: 1px solid #dddddd;
+      }
+      li:first-child {
+        border-top: none;
+      }
+    }
+    
+  }
+  
+
+  .social-proof {
+    padding: 17px 0;
+    blockquote {
+      h2, h3, h4 {
+        padding: 5px 0;
+      }
+    }
+  }
+  
+}

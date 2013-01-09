@@ -123,6 +123,26 @@ module Koudoku::Subscription
   end
 
   module InstanceMethods
+    
+    def describe_difference(plan_to_describe)
+      if plan.nil?
+        if persisted?
+          "Upgrade"
+        else
+          if Koudoku.free_trial?
+            "Start Trial"
+          else 
+            "Upgrade"
+          end
+        end
+      else
+        if plan_to_describe.is_upgrade_from?(plan)
+          "Upgrade"
+        else
+          "Downgrade"
+        end
+      end
+    end
 
     # Pretty sure this wouldn't conflict with anything someone would put in their model
     def subscription_owner

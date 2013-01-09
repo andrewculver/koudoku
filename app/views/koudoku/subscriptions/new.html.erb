@@ -1,9 +1,11 @@
 <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
 
 <%= form_for @subscription, url: @subscription.persisted? ? owner_subscription_path(@owner, @subscription) : owner_subscriptions_path(@owner), html: {id: 'payment-form', class: 'form-horizontal'} do |f| %>
-
-  <h1>Start Your Free Trial</h1>
-  <p>Testing</p>
+  <% if Koudoku.free_trial? %>
+    <h1>Start Your Free Trial</h1>
+  <% else %>
+    <h1>Upgrade Your Account</h1>
+  <% end %>
 
   <fieldset>
     
@@ -37,8 +39,12 @@
   </fieldset>
     
   <div class="form-actions">
-    <button type="submit" class="btn btn-primary submit-button">Save Billing Information</button>
-    <button type="button" class="btn">Cancel</button>
+    <% if Koudoku.free_trial? %>
+      <button type="submit" class="btn btn-primary submit-button">Save Billing Information</button>
+    <% else %>
+      <button type="submit" class="btn btn-primary submit-button">Upgrade Your Account</button>
+    <% end %>
+    <%= link_to "Cancel", owner_subscriptions_path(@owner), class: 'btn' %>
   </div>
 
 <% end %>
