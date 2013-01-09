@@ -1,0 +1,8 @@
+<h1>Thanks!</h1>
+<% if @subscription.plan.present? %>
+<p>You're subscribed to the <%= @subscription.plan.name %> plan!</p>
+<%= link_to 'Cancel subscription', cancel_owner_subscription_path(@owner, @subscription), method: :post %>
+<% else %>
+<p>You are not subscribed to a paid plan.</p>
+<%= link_to 'Choose a plan', owner_subscriptions_path(@owner) %>
+<% end %>

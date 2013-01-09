@@ -1,0 +1,93 @@
+<script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+
+<%= form_for @subscription, url: @subscription.persisted? ? owner_subscription_path(@owner, @subscription) : owner_subscriptions_path(@owner), html: {id: 'payment-form', class: 'form-horizontal'} do |f| %>
+
+  <h1>Start Your Free Trial</h1>
+  <p>Testing</p>
+
+  <fieldset>
+    
+    <div class="alert alert-error payment-errors"></div>
+
+    <%= f.hidden_field :plan_id %>
+
+    <div class="control-group">
+      <label class="control-label">Card Number</label>
+      <div class="controls">
+        <input type="text" size="20" autocomplete="off" class="card-number"/>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Expiration (MM/YYYY)</label>
+      <div class="controls">
+        <input type="text" size="2" class="card-expiry-month input-mini"/>
+        <span> / </span>
+        <input type="text" size="4" class="card-expiry-year input-mini"/>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">CVC</label>
+      <div class="controls">
+        <input type="text" size="4" autocomplete="off" class="card-cvc input-small"/>
+      </div>
+    </div>
+    
+  </fieldset>
+    
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary submit-button">Save Billing Information</button>
+    <button type="button" class="btn">Cancel</button>
+  </div>
+
+<% end %>
+
+<script type="text/javascript">
+
+  // All this code taken from Stripe's own examples at:
+  // https://stripe.com/docs/tutorials/forms .
+  
+  Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
+
+  function stripeResponseHandler(status, response) {
+
+      if (response.error) {
+          // show the errors on the form
+          $(".payment-errors").text(response.error.message).show();
+          $(".submit-button").removeAttr("disabled");
+      } else {
+          var form$ = $("#payment-form");
+          // token contains id, last4, and card type
+          // insert the token into the form so it gets submitted to the server
+          form$.append("<input type='hidden' name='subscription[credit_card_token]' value='" + response['id'] + "'/>");
+          form$.append("<input type='hidden' name='subscription[last_four]' value='" + response['last4'] + "'/>");
+          form$.append("<input type='hidden' name='subscription[card_type]' value='" + response['card_type'] + "'/>");
+          // and submit
+          form$.get(0).submit();
+      }
+  }
+
+  $(document).ready(function() {
+    
+    // By default, don't show errors.
+    $(".payment-errors").hide()
+    
+    $("#payment-form").submit(function(event) {
+
+      // disable the submit button to prevent repeated clicks
+      $('.submit-button').attr("disabled", "disabled");
+
+      Stripe.createToken({
+          number: $('.card-number').val(),
+          cvc: $('.card-cvc').val(),
+          exp_month: $('.card-expiry-month').val(),
+          exp_year: $('.card-expiry-year').val()
+      }, stripeResponseHandler);
+
+      // prevent the form from submitting with the default action
+      return false;
+    });
+  });
+
+</script>

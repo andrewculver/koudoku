@@ -3,12 +3,12 @@ module Koudoku::Subscription
 
   included do
 
-    attr_accessible :plan_id, :stripe_id, :current_price
+    attr_accessible :plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four
 
-    # We don't store these one-time use tokens, but this is what Strie provides
+    # We don't store these one-time use tokens, but this is what Stripe provides
     # client-side after storing the credit card information.
     attr_accessor :credit_card_token
-
+    
     belongs_to :plan
 
     # update details.
@@ -84,7 +84,7 @@ module Koudoku::Subscription
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
-
+              
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
               card_was_declined
@@ -128,13 +128,13 @@ module Koudoku::Subscription
     def subscription_owner
       # Return whatever we belong to.
       # If this object doesn't respond to 'name', please update owner_description.
-      user
+      send Koudoku.subscriptions_owned_by
     end
 
     def subscription_owner_description
       # assuming owner responds to name.
       # we should check for whether it responds to this or not.
-      "#{subscription_owner.name} (#{subscription_owner.id})"
+      "#{subscription_owner.id}"
     end
 
     def changing_plans?

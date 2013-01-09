@@ -1,0 +1,43 @@
+<h1>What Plan Suits Your Business?</h1>
+
+<div class="pricing-table">
+<ul class="thumbnails pricing-table">
+  <% @plans.each do |plan| %>
+    <li class="span3 plan <%= 'plan-primary' if plan.id == 2 %>">
+      <div class="thumbnail">
+        <div class="caption">
+          <h2><%= plan.name %></h2>
+          <h3><%= number_to_currency(plan.price) %>/month</h3>
+          <div class="call-to-action">
+            <%= link_to 'Start Trial', new_owner_subscription_path(@owner, plan: plan.id), test: 'test', class: "btn btn-success btn-large" %>
+          </div>
+          <ul class="features">
+            <li class='muted'>30-day Free Trial</li>
+            <li>Testing.</li>
+            <li>Testing.</li>
+            <li>Testing.</li>
+            <li>Testing.</li>
+          </ul>
+        </div>
+      </div>
+    </li>
+  <% end %>
+
+  <li class="span3 social-proof">
+    
+    <blockquote>
+    <h3>"Some Great Quote"</h3> &mdash; Person at Place
+    </blockquote>
+
+    <blockquote>
+    <h4>"This is a great service and you've been the best ever! Thanks!"</h4> &mdash; Person at Place
+    </blockquote>
+    
+    <blockquote>
+    <h4>"I love you guys and you're the best! You're the best!"</h4> &mdash; Person at Place
+    </blockquote>
+    
+  </li>
+</ul>
+</div>
+

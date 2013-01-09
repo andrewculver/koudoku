@@ -14,9 +14,9 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
     
 After installing, you'll need to add some subscription plans.
 
-    Plan.create(name: 'Personal', price: 10.00)
-    Plan.create(name: 'Team', price: 30.00)
-    Plan.create(name: 'Enterprise', price: 100.00)
+    Plan.create(name: 'Personal', price: 10.00, stripe_id: '1')
+    Plan.create(name: 'Team', price: 30.00, stripe_id: '2')
+    Plan.create(name: 'Enterprise', price: 100.00, stripe_id: '3')
 
 ## Using Coupons
 
