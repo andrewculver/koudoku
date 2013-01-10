@@ -38,7 +38,7 @@ On Heroku you accomplish this same effect with [Config Vars](https://devcenter.h
 
 Users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
 
-    koudoku_owner_subscriptions_path(@user)
+    koudoku.owner_subscriptions_path(@user)
   
 In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
 
