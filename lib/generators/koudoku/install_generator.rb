@@ -43,7 +43,7 @@ RUBY
       
       # Add the plans.
       generate("model", "plan name:string stripe_id:string price:float")
-      gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n"
+      gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Plan\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n  has_many :subscriptions\n"
 
       # Add coupons.
       generate("model coupon code:string free_trial_length:string")
