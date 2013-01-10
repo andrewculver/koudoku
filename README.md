@@ -17,7 +17,46 @@ After installing, you'll need to add some subscription plans.
     Plan.create(name: 'Personal', price: 10.00, stripe_id: '1')
     Plan.create(name: 'Team', price: 30.00, stripe_id: '2')
     Plan.create(name: 'Enterprise', price: 100.00, stripe_id: '3')
+    
+### Configuring Stripe API Keys
 
+You can supply your publishable and secret API keys in `config/initializers/koudoku.rb`. However, by default it will use the `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` shell environment variables. This encourages people to keep these API keys out of version control. You may want to rename these environment variables to be more application specific.
+
+In a bash shell, you can set them in `~/.bash_profile` like so:
+
+    export STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
+    export STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
+    
+(Reload your terminal for these settings to take effect.)
+    
+On Heroku you accomplish this same effect with [Config Vars](https://devcenter.heroku.com/articles/config-vars):
+
+    heroku config:add STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
+    heroku config:add STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
+    
+## User-Facing Subscription Management
+
+Users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
+
+    koudoku_owner_subscriptions_path(@user)
+  
+In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
+
+A number of views are provided by default. To customize the views, use the following generator:
+
+    rails g koudoku:views
+
+### Pricing Table
+
+Koudoku ships with a stock pricing table. By default it depends on Twitter Bootstrap, but also has some additional styles required. In order to import these styles, add the following to your `app/assets/stylesheets/application.css`:
+
+    *= require 'koudoku/pricing-table'
+    
+Or, if you've replaced your `application.css` with an `application.scss` (like I always do):
+
+    @import "koudoku/pricing-table"
+    
+    
 ## Using Coupons
 
 While more robust coupon support is expected in the future, the simple way to use a coupon is to first create it:
