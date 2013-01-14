@@ -1,5 +1,5 @@
 ul.koudoku-pricing-table {
-
+  
   position: relative;
   margin: 20px 0;
   margin-left: 25px;
@@ -17,7 +17,6 @@ ul.koudoku-pricing-table {
     position: relative;
     z-index: 99;
     
-
     &.plan-primary {
       background-color: #f9f9f9;
       margin-top: 0px;
@@ -26,15 +25,17 @@ ul.koudoku-pricing-table {
       margin-right: -5px;
       
       z-index: 100;
-      
-      h2 {
-        margin-top: 5px;
-        padding-bottom: 7px;
-        font-size: 2.5em;
+
+      h3 {
+        font-size: 32.5px;
+        line-height: 51px;
+      }
+      h4 {
+        line-height: 22px;
       }
       a, input[type=submit] {
-        font-size: 2em;
-        font-size: 14pt;
+        font-size: 21.5px;
+        line-height: 26px;
       }
       ul.features {
         margin-bottom: 12px;

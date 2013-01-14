@@ -3,10 +3,12 @@
     <li class="span3 plan <%= 'plan-primary' if plan.id == 2 %>">
       <div class="thumbnail">
         <div class="caption">
-          <h2><%= plan.name %></h2>
-          <h3><%= number_to_currency(plan.price) %>/month</h3>
+          <h3><%= plan.name %></h3>
+          <h4><%= number_to_currency(plan.price) %>/month</h4>
           <div class="call-to-action">
-            <% if @subscription.persisted? %>
+            <% if @subscription.nil? %>
+              <%= link_to Koudoku.free_trial? ? 'Start Trial' : 'Sign Up', koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
+            <% elsif @subscription.persisted? %>
               <% if @subscription.plan == plan %>
                 <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.submit 'Selected', class: "btn btn-large", disabled: 'disabled' %>
@@ -38,7 +40,7 @@
   <li class="span3 social-proof">
     
     <blockquote>
-    <h3>"Some Great Quote"</h3> &mdash; Person at Place
+    <h4>"Some Great Quote"</h4> &mdash; Person at Place
     </blockquote>
 
     <blockquote>
