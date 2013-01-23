@@ -63,11 +63,11 @@ On Heroku you accomplish this same effect with [Config Vars](https://devcenter.h
 
 By default a `pricing_path` route is defined which you can link to in order to show visitors a pricing table. If a user is signed in, this pricing table will take into account their current plan. For example, you can link to this page like so:
 
-  <%= link_to 'Pricing', pricing_path %>
+    <%= link_to 'Pricing', pricing_path %>
 
 Existing users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
 
-  koudoku.owner_subscriptions_path(@user)
+    koudoku.owner_subscriptions_path(@user)
   
 In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
 
