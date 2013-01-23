@@ -20,7 +20,7 @@ After installing, you'll need to add some subscription plans. (Note that we high
       name: 'Personal',
       price: 10.00,
       stripe_id: '1', # This maps to the plan ID in Stripe.
-      features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"),
+      features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"), # Features support Markdown syntax.
       display_order: 1
     })
 

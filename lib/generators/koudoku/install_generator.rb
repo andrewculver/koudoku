@@ -61,7 +61,7 @@ RUBY
       end
 
       # Add webhooks to the route.
-      gsub_file "config/routes.rb", /Application.routes.draw do/, "Application.routes.draw do\n\n  # Added by Koudoku.\n  mount Koudoku::Engine, at: \"koudoku\"\n\n"
+      gsub_file "config/routes.rb", /Application.routes.draw do/, "Application.routes.draw do\n\n  # Added by Koudoku.\n  mount Koudoku::Engine, at: 'koudoku'\n  match 'pricing' => 'koudoku::subscriptions#index', as: 'pricing'\n\n"
       
       # Show the user the API key we generated.
       say "\nTo enable support for Stripe webhooks, point it to \"/koudoku/webhooks?api_key=#{api_key}\". This API key has been randomly generated, so it's unique to your application.\n\n"
