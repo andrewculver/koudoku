@@ -1,6 +1,6 @@
 <ul class="thumbnails koudoku-pricing-table">
   <% @plans.each do |plan| %>
-    <li class="span3 plan <%= 'plan-primary' if plan.id == 2 %>">
+    <li class="span3 plan <%= 'plan-primary' if plan.highlight? %>">
       <div class="thumbnail">
         <div class="caption">
           <h3><%= plan.name %></h3>
@@ -27,10 +27,7 @@
             <% if Koudoku.free_trial? %>
             <li class='muted'><%= Koudoku.free_trial_length %>-day Free Trial</li>
             <% end %>
-            <li>Testing.</li>
-            <li>Testing.</li>
-            <li>Testing.</li>
-            <li>Testing.</li>
+            <%= BlueCloth.new(plan.features.gsub(/\n/, "\n\n")).to_html.gsub(/<(\/?)p>/, '<\1li>').html_safe %>
           </ul>
         </div>
       </div>
@@ -38,18 +35,6 @@
   <% end %>
 
   <li class="span3 social-proof">
-    
-    <blockquote>
-    <h4>"Some Great Quote"</h4> &mdash; Person at Place
-    </blockquote>
-
-    <blockquote>
-    <h4>"This is a great service and you've been the best ever! Thanks!"</h4> &mdash; Person at Place
-    </blockquote>
-    
-    <blockquote>
-    <h4>"I love you guys and you're the best! You're the best!"</h4> &mdash; Person at Place
-    </blockquote>
-    
+    <%= render 'koudoku/subscriptions/social_proof' %>
   </li>
 </ul>

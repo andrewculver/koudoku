@@ -1,6 +1,8 @@
 # Koudoku
 
-Robust subscription support for Ruby on Rails apps using [Stripe](https://stripe.com). Makes it easy to manage actions related to new subscriptions, upgrades, downgrades, cancelations, payment failures, as well as hooking up notifications, metrics logging, coupons, etc.
+Robust subscription support for Ruby on Rails apps using [Stripe](https://stripe.com), including out-of-the-box pricing pages, payment pages, and  subscription management for your customers. Also makes it easy to manage logic related to new subscriptions, upgrades, downgrades, cancellations, payment failures, and streamlines hooking up notifications, metrics logging, etc.
+
+To see an example of Koudoku in action, please visit [Koudoku.org](http://koudoku.org/).
 
 ## Installation
 
@@ -12,11 +14,34 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
 
     rails g koudoku:install user
     
-After installing, you'll need to add some subscription plans.
+After installing, you'll need to add some subscription plans. (Note that we highlight the 'Team' plan.)
 
-    Plan.create(name: 'Personal', price: 10.00, stripe_id: '1')
-    Plan.create(name: 'Team', price: 30.00, stripe_id: '2')
-    Plan.create(name: 'Enterprise', price: 100.00, stripe_id: '3')
+    Plan.create({
+      name: 'Personal',
+      price: 10.00,
+      stripe_id: '1', # This maps to the plan ID in Stripe.
+      features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"),
+      display_order: 1
+    })
+
+    Plan.create({
+      name: 'Team',
+      highlight: true, # This highlights the plan on the pricing page.
+      price: 30.00,
+      stripe_id: '2',
+      features: ['3 Projects', '3 Pages', '3 Users', '3 Organizations'].join("\n\n"),
+      display_order: 2
+    })
+    
+    Plan.create({
+      name: 'Enterprise',
+      price: 100.00, 
+      stripe_id: '3', 
+      features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"), 
+      display_order: 3
+    })
+    
+The only view installed locally into your app by default is the `koudoku/subscriptions/_social_proof.html.erb` partial which is displayed alongside the pricing table. It's designed as a placeholder where you can provide quotes about your product from customers that could positively influence your visitors.
     
 ### Configuring Stripe API Keys
 
@@ -36,9 +61,13 @@ On Heroku you accomplish this same effect with [Config Vars](https://devcenter.h
     
 ## User-Facing Subscription Management
 
-Users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
+By default a `pricing_path` route is defined which you can link to in order to show visitors a pricing table. If a user is signed in, this pricing table will take into account their current plan. For example, you can link to this page like so:
 
-    koudoku.owner_subscriptions_path(@user)
+  <%= link_to 'Pricing', pricing_path %>
+
+Existing users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
+
+  koudoku.owner_subscriptions_path(@user)
   
 In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
 
@@ -56,7 +85,6 @@ Or, if you've replaced your `application.css` with an `application.scss` (like I
 
     @import "koudoku/pricing-table"
     
-    
 ## Using Coupons
 
 While more robust coupon support is expected in the future, the simple way to use a coupon is to first create it:
@@ -69,6 +97,8 @@ Then assign it to a _new_ subscription before saving:
     subscription.coupon = coupon
     subscription.save
     
+It should be noted that these coupons are different from the coupons provided natively by Stripe.
+    
 ## Implementing Logging, Notifications, etc.
 
 The included module defines the following empty "template methods" which you're able to provide an implementation for in `Subscription`:
@@ -78,11 +108,13 @@ The included module defines the following empty "template methods" which you're 
  - `prepare_for_upgrade`
  - `prepare_for_downgrade`
  - `prepare_for_cancelation`
+ - `prepare_for_card_update`
  - `finalize_plan_change!`
  - `finalize_new_subscription!`
  - `finalize_upgrade!`
  - `finalize_downgrade!`
  - `finalize_cancelation!`
+ - `finalize_card_update!`
  - `card_was_declined`
  
 Be sure to include a call to `super` in each of your implementations, especially if you're using multiple concerns to break all this logic into smaller pieces.

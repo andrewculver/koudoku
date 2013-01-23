@@ -35,10 +35,23 @@ module Koudoku
     end
 
     def index
-      # we should also set the owner of the subscription here.
-      @subscription = ::Subscription.new({Koudoku.owner_id_sym => @owner.id})
-      # e.g. @subscription.user = @owner
-      @subscription.send Koudoku.owner_assignment_sym, @owner
+
+      # don't bother showing the index if they've already got a subscription.
+      if current_owner and current_owner.subscription.present?
+        redirect_to koudoku.edit_owner_subscription_path(current_owner, current_owner.subscription)
+      end
+
+      # Load all plans.
+      @plans = ::Plan.order(:display_order).all
+      
+      # Don't prep a subscription unless a user is authenticated.
+      unless no_owner?
+        # we should also set the owner of the subscription here.
+        @subscription = ::Subscription.new({Koudoku.owner_id_sym => @owner.id})
+        # e.g. @subscription.user = @owner
+        @subscription.send Koudoku.owner_assignment_sym, @owner
+      end
+
     end
 
     def new

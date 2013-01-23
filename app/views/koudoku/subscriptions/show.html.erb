@@ -1,8 +1,15 @@
-<h1>Thanks!</h1>
 <% if @subscription.plan.present? %>
-<p>You're subscribed to the <%= @subscription.plan.name %> plan!</p>
-<%= link_to 'Choose another plan', edit_owner_subscription_path(@owner, @subscription) %>
+<h2>You're Subscribed!</h2>
+<p>Your currently subscribed to the <%= @subscription.plan.name %> plan.</p>
+<%= link_to 'Choose Another Plan', edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
 <% else %>
+<h2>No Subscription</h2>
 <p>You are not subscribed to a paid plan.</p>
-<%= link_to 'Choose a plan', edit_owner_subscription_path(@owner, @subscription) %>
+<%= link_to 'Choose A Plan', edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
 <% end %>
+
+<br><br>
+
+<h4>Payment Information</h4>
+<p>The card on file for your account ends with <%= @subscription.last_four %>.</p>
+<%= link_to 'Update Payment Information', edit_owner_subscription_path(@owner, @subscription, update: 'card'), class: 'btn' %>

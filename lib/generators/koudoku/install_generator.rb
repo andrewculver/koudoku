@@ -10,7 +10,7 @@ module Koudoku
   class InstallGenerator < Rails::Generators::Base
 
     # Not sure what this does.
-    source_root File.expand_path("../templates", __FILE__)
+    source_root File.expand_path("../../../../app/views/koudoku/subscriptions", __FILE__)
 
     include Rails::Generators::Migration
 
@@ -42,7 +42,7 @@ RUBY
       gsub_file "app/models/subscription.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Subscription\n\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n"
       
       # Add the plans.
-      generate("model", "plan name:string stripe_id:string price:float")
+      generate("model", "plan name:string stripe_id:string price:float features:text highlight:boolean display_order:integer")
       gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Plan\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n  has_many :subscriptions\n"
 
       # Add coupons.
@@ -54,6 +54,11 @@ RUBY
 
       # Update the owner relationship.
       gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
+      
+      # Install the pricing table.
+      ["_social_proof.html.erb"].each do |file|
+        copy_file "#{}file", "app/views/koudoku/subscriptions/#{file}"
+      end
 
       # Add webhooks to the route.
       gsub_file "config/routes.rb", /Application.routes.draw do/, "Application.routes.draw do\n\n  # Added by Koudoku.\n  mount Koudoku::Engine, at: \"koudoku\"\n\n"

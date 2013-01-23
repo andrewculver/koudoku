@@ -112,6 +112,21 @@ module Koudoku::Subscription
         end
 
         finalize_plan_change!
+        
+      # if they're updating their credit card details.
+      elsif self.credit_card_token.present?
+        
+        prepare_for_card_update
+        
+        # fetch the customer.
+        customer = Stripe::Customer.retrieve(self.stripe_id)
+        customer.card = self.credit_card_token
+        customer.save
+
+        # update the last four based on this new card.
+        self.last_four = customer.active_card.last4
+        
+        finalize_card_update!
 
       end
 
@@ -184,6 +199,9 @@ module Koudoku::Subscription
 
     def prepare_for_cancelation
     end
+    
+    def prepare_for_card_update
+    end
 
     def finalize_plan_change!
     end
@@ -200,6 +218,9 @@ module Koudoku::Subscription
     def finalize_cancelation!
     end
 
+    def finalize_card_update!
+    end
+
     def card_was_declined
     end
     
@@ -212,7 +233,7 @@ module Koudoku::Subscription
     
     def charge_disputed
     end
-
+    
   end
 
 end
