@@ -63,7 +63,9 @@ On Heroku you accomplish this same effect with [Config Vars](https://devcenter.h
 
 By default a `pricing_path` route is defined which you can link to in order to show visitors a pricing table. If a user is signed in, this pricing table will take into account their current plan. For example, you can link to this page like so:
 
-    <%= link_to 'Pricing', pricing_path %>
+    <%= link_to 'Pricing', main_app.pricing_path %>
+    
+(Note: Koudoku uses the application layout, so it's important that application paths referenced in that layout are prefixed with "`main_app.`" like you see above or Rails will try to look the paths up in the Koudoku engine instead of your application.)
 
 Existing users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
 
