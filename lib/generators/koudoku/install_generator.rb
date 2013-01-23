@@ -57,7 +57,7 @@ RUBY
       
       # Install the pricing table.
       ["_social_proof.html.erb"].each do |file|
-        copy_file "#{}file", "app/views/koudoku/subscriptions/#{file}"
+        copy_file file, "app/views/koudoku/subscriptions/#{file}"
       end
 
       # Add webhooks to the route.
