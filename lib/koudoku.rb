@@ -1,4 +1,5 @@
 require "koudoku/engine"
+require "koudoku/stripe_interface"
 require "generators/koudoku/install_generator"
 require "generators/koudoku/views_generator"
 
@@ -21,9 +22,9 @@ module Koudoku
   
   def self.setup
     yield self
-    
-    # Configure the Stripe 
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+
+    # Configure the Stripe-Interface
+    StripeInterface.api_key = ENV['STRIPE_SECRET_KEY']
   end
   
   # e.g. :users
