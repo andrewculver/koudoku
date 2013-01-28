@@ -14,6 +14,10 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
 
     rails g koudoku:install user
     
+You will need to have the following line in your layout after you load jquery. This will allow koudoku to place javascripts in the correct order.
+
+    yield :javascripts
+
 After installing, you'll need to add some subscription plans. (Note that we highlight the 'Team' plan.)
 
     Plan.create({
