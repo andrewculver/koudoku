@@ -1,11 +1,20 @@
-<script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+<%- if Koudoku::StripeInterface.strip? -%>
+  <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+<%- elsif Koudoku::StripeInterface.paymill? -%>
+  <script type="text/javascript">
+    var PAYMILL_PUBLIC_KEY = '<%= Koudoku.stripe_publishable_key %>';
+  </script>
+  <%= javascript_include_tag "https://bridge.paymill.com/" %>
+<%- end -%>
+
+
 
 <%= form_for @subscription, url: url, html: {id: 'payment-form', class: 'form-horizontal'} do |f| %>
 
   <fieldset>
 
     <legend><%= title %></legend>
-    
+
     <div class="control-group">
       <label class="control-label">Card Number</label>
       <div class="controls">
@@ -51,8 +60,10 @@
 
   // All this code taken from Stripe's own examples at:
   // https://stripe.com/docs/tutorials/forms .
-  
-  Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
+
+  <%- if Koudoku::StripeInterface.strip? -%>
+    Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
+  <%- end -%>
 
   function stripeResponseHandler(status, response) {
 
