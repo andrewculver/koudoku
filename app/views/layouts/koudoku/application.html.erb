@@ -4,6 +4,7 @@
   <title>Koudoku</title>
   <%= stylesheet_link_tag    "koudoku/application", :media => "all" %>
   <%= javascript_include_tag "koudoku/application" %>
+  <%= yield :javascripts %>
   <%= csrf_meta_tags %>
 </head>
 <body>
