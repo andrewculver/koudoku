@@ -1,4 +1,3 @@
-require 'stripe'
 require 'bluecloth'
 module Koudoku
   class Engine < ::Rails::Engine

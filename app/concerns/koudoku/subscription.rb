@@ -23,7 +23,7 @@ module Koudoku::Subscription
         if stripe_id.present?
 
           # fetch the customer.
-          customer = Stripe::Customer.retrieve(self.stripe_id)
+          customer = Koudoku::StripeInterface::Customer.retrieve(self.stripe_id)
 
           # if a new plan has been selected
           if self.plan.present?
@@ -83,10 +83,10 @@ module Koudoku::Subscription
               end
 
               # create a customer at that package level.
-              customer = Stripe::Customer.create(customer_attributes)
-              
-            rescue Stripe::CardError => card_error
-              errors[:base] << card_error.message
+              customer = Koudoku::StripeInterface::Customer.create(customer_attributes)
+
+            rescue Koudoku::StripeInterface.error_class => error
+              errors[:base] << error.message
               card_was_declined
               return false
             end
@@ -119,7 +119,7 @@ module Koudoku::Subscription
         prepare_for_card_update
         
         # fetch the customer.
-        customer = Stripe::Customer.retrieve(self.stripe_id)
+        customer = Koudoku::StripeInterface::Customer.retrieve(self.stripe_id)
         customer.card = self.credit_card_token
         customer.save
 
