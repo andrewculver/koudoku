@@ -13,6 +13,7 @@ Include the following in your `Gemfile`:
 After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
     rails g koudoku:install user
+    rake db:migrate
     
 After installing, you'll need to add some subscription plans. (Note that we highlight the 'Team' plan.)
 
