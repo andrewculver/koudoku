@@ -31,7 +31,9 @@ module Koudoku
         subscription.charge_disputed
       
       end
-    
+      
+      render nothing: true
+      
     end
     
   end
