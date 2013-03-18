@@ -12,7 +12,8 @@ module Koudoku::Subscription
     belongs_to :plan
 
     # update details.
-    before_save do
+    before_save :processing!
+    def processing!
 
       # if their package level has changed ..
       if changing_plans? 
@@ -137,103 +138,99 @@ module Koudoku::Subscription
   module ClassMethods
   end
 
-  module InstanceMethods
-    
-    def describe_difference(plan_to_describe)
-      if plan.nil?
-        if persisted?
-          "Upgrade"
-        else
-          if Koudoku.free_trial?
-            "Start Trial"
-          else 
-            "Upgrade"
-          end
-        end
+  def describe_difference(plan_to_describe)
+    if plan.nil?
+      if persisted?
+        "Upgrade"
       else
-        if plan_to_describe.is_upgrade_from?(plan)
+        if Koudoku.free_trial?
+          "Start Trial"
+        else 
           "Upgrade"
-        else
-          "Downgrade"
         end
       end
+    else
+      if plan_to_describe.is_upgrade_from?(plan)
+        "Upgrade"
+      else
+        "Downgrade"
+      end
     end
+  end
 
-    # Pretty sure this wouldn't conflict with anything someone would put in their model
-    def subscription_owner
-      # Return whatever we belong to.
-      # If this object doesn't respond to 'name', please update owner_description.
-      send Koudoku.subscriptions_owned_by
-    end
+  # Pretty sure this wouldn't conflict with anything someone would put in their model
+  def subscription_owner
+    # Return whatever we belong to.
+    # If this object doesn't respond to 'name', please update owner_description.
+    send Koudoku.subscriptions_owned_by
+  end
 
-    def subscription_owner_description
-      # assuming owner responds to name.
-      # we should check for whether it responds to this or not.
-      "#{subscription_owner.id}"
-    end
+  def subscription_owner_description
+    # assuming owner responds to name.
+    # we should check for whether it responds to this or not.
+    "#{subscription_owner.id}"
+  end
 
-    def changing_plans?
-      plan_id_changed?
-    end
+  def changing_plans?
+    plan_id_changed?
+  end
 
-    def downgrading?
-      plan.present? and plan_id_was.present? and plan_id_was > self.plan_id
-    end
+  def downgrading?
+    plan.present? and plan_id_was.present? and plan_id_was > self.plan_id
+  end
 
-    def upgrading?
-      (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
-    end
+  def upgrading?
+    (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
+  end
 
-    # Template methods.
-    def prepare_for_plan_change
-    end
+  # Template methods.
+  def prepare_for_plan_change
+  end
 
-    def prepare_for_new_subscription
-    end
+  def prepare_for_new_subscription
+  end
 
-    def prepare_for_upgrade
-    end
+  def prepare_for_upgrade
+  end
 
-    def prepare_for_downgrade
-    end
+  def prepare_for_downgrade
+  end
 
-    def prepare_for_cancelation
-    end
-    
-    def prepare_for_card_update
-    end
+  def prepare_for_cancelation
+  end
+  
+  def prepare_for_card_update
+  end
 
-    def finalize_plan_change!
-    end
+  def finalize_plan_change!
+  end
 
-    def finalize_new_subscription!
-    end
+  def finalize_new_subscription!
+  end
 
-    def finalize_upgrade!
-    end
+  def finalize_upgrade!
+  end
 
-    def finalize_downgrade!
-    end
+  def finalize_downgrade!
+  end
 
-    def finalize_cancelation!
-    end
+  def finalize_cancelation!
+  end
 
-    def finalize_card_update!
-    end
+  def finalize_card_update!
+  end
 
-    def card_was_declined
-    end
-    
-    # stripe web-hook callbacks.
-    def payment_succeeded(amount)
-    end
-    
-    def charge_failed
-    end
-    
-    def charge_disputed
-    end
-    
+  def card_was_declined
+  end
+  
+  # stripe web-hook callbacks.
+  def payment_succeeded(amount)
+  end
+  
+  def charge_failed
+  end
+  
+  def charge_disputed
   end
 
 end

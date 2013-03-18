@@ -9,12 +9,8 @@ module Koudoku::Plan
 
   end
 
-  module InstanceMethods
-    
-    def is_upgrade_from?(plan)
-      self.price >= plan.price
-    end
-
+  def is_upgrade_from?(plan)
+    self.price >= plan.price
   end
 
 end
