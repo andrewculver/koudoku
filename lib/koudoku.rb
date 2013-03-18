@@ -22,8 +22,8 @@ module Koudoku
   def self.setup
     yield self
     
-    # Configure the Stripe 
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+    # Configure the Stripe gem.
+    Stripe.api_key = stripe_secret_key
   end
   
   # e.g. :users
