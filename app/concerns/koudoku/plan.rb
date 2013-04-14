@@ -10,7 +10,7 @@ module Koudoku::Plan
   end
 
   def is_upgrade_from?(plan)
-    self.price >= plan.price
+    (price || 0) >= (plan.price || 0)
   end
 
 end
