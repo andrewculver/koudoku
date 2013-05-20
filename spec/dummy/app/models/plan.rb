@@ -6,5 +6,5 @@ class Plan < ActiveRecord::Base
   belongs_to :coupon
   has_many :subscriptions
 
-  attr_accessible :display_order, :features, :highlight, :name, :price, :stripe_id
+  attr_accessible :display_order, :features, :highlight, :name, :price, :interval, :stripe_id
 end

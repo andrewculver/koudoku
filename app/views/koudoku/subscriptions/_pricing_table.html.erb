@@ -4,7 +4,7 @@
       <div class="thumbnail">
         <div class="caption">
           <h3><%= plan.name %></h3>
-          <h4><%= number_to_currency(plan.price) %>/month</h4>
+          <h4><%= plan_price(plan) %></h4>
           <div class="call-to-action">
             <% if @subscription.nil? %>
               <%= link_to Koudoku.free_trial? ? 'Start Trial' : 'Sign Up', koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>

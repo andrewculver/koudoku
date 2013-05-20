@@ -42,7 +42,7 @@ RUBY
       gsub_file "app/models/subscription.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Subscription\n\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n"
       
       # Add the plans.
-      generate("model", "plan name:string stripe_id:string price:float features:text highlight:boolean display_order:integer")
+      generate("model", "plan name:string stripe_id:string price:float interval:string features:text highlight:boolean display_order:integer")
       gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Plan\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n  has_many :subscriptions\n"
 
       # Add coupons.

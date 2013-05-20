@@ -15,13 +15,15 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
     rails g koudoku:install user
     rake db:migrate
     
-After installing, you'll need to add some subscription plans. (Note that we highlight the 'Team' plan.)
+After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
     Plan.create({
       name: 'Personal',
       price: 10.00,
-      stripe_id: '1', # This maps to the plan ID in Stripe.
-      features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"), # Features support Markdown syntax.
+      interval: 'month',
+      stripe_id: '1',
+      features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"),
+      interval: 'month',
       display_order: 1
     })
 
@@ -29,6 +31,7 @@ After installing, you'll need to add some subscription plans. (Note that we high
       name: 'Team',
       highlight: true, # This highlights the plan on the pricing page.
       price: 30.00,
+      interval: 'month',
       stripe_id: '2',
       features: ['3 Projects', '3 Pages', '3 Users', '3 Organizations'].join("\n\n"),
       display_order: 2
@@ -37,11 +40,24 @@ After installing, you'll need to add some subscription plans. (Note that we high
     Plan.create({
       name: 'Enterprise',
       price: 100.00, 
+      interval: 'month',
       stripe_id: '3', 
       features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"), 
       display_order: 3
     })
     
+To help you understand the attributes:
+    
+| Attribute       | Type    | Function |
+| --------------- | ------- | -------- |
+| `name`          | string  | Name for the plan to be presented to customers. |
+| `price`         | float   | Price per billing cycle. |
+| `interval`      | string  | *Optional.* What is the billing cycle? Valid options are `month`, `year`, `week`, `3-month`, `6-month`. Defaults to `month`. |
+| `stripe_id`     | string  | The Plan ID in Stripe. |
+| `features`      | string  | A list of features. Supports Markdown syntax. |
+| `display_order` | integer | Order in which to display plans. |
+| `highlight`     | boolean | *Optional.* Whether to highlight the plan on the pricing page. |
+
 The only view installed locally into your app by default is the `koudoku/subscriptions/_social_proof.html.erb` partial which is displayed alongside the pricing table. It's designed as a placeholder where you can provide quotes about your product from customers that could positively influence your visitors.
     
 ### Configuring Stripe API Keys
