@@ -10,5 +10,6 @@ To upgrade earlier installations, you can run the following commands:
 You'll also need to make this attribute mass-assignable:
 
     class Plan < ActiveRecord::Base
+      include Koudoku::Plan
       attr_accessible :interval
     end
