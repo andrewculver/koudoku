@@ -47,7 +47,7 @@ RUBY
 
       # Add coupons.
       generate("model coupon code:string free_trial_length:string")
-      gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  has_many :subscriptions\n"
+      gsub_file "app/models/coupon.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  has_many :subscriptions\n"
       
       # Update the owner relationship.
       gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
