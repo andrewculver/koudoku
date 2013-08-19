@@ -23,7 +23,6 @@ After installing, you'll need to add some subscription plans. (You can see an ex
       interval: 'month',
       stripe_id: '1',
       features: ['1 Project', '1 Page', '1 User', '1 Organization'].join("\n\n"),
-      interval: 'month',
       display_order: 1
     })
 

@@ -38,7 +38,7 @@ RUBY
       end
 
       # Generate subscription.
-      generate("model", "subscription stripe_id:string plan_id:integer last_four:string coupon_id:integer last_four:string card_type:string current_price:float #{subscription_owner_model}_id:integer")
+      generate("model", "subscription stripe_id:string plan_id:integer last_four:string coupon_id:integer card_type:string current_price:float #{subscription_owner_model}_id:integer")
       gsub_file "app/models/subscription.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Subscription\n\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n"
       
       # Add the plans.
@@ -47,11 +47,8 @@ RUBY
 
       # Add coupons.
       generate("model coupon code:string free_trial_length:string")
-      gsub_file "app/models/plan.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  has_many :subscriptions\n"
+      gsub_file "app/models/coupon.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  has_many :subscriptions\n"
       
-      # Update the owner relationship.
-      gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
-
       # Update the owner relationship.
       gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
       
