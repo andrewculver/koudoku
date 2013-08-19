@@ -51,9 +51,6 @@ RUBY
       
       # Update the owner relationship.
       gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
-
-      # Update the owner relationship.
-      gsub_file "app/models/#{subscription_owner_model}.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n\n  # Added by Koudoku.\n  has_one :subscription\n\n"
       
       # Install the pricing table.
       ["_social_proof.html.erb"].each do |file|
