@@ -15,6 +15,12 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
     rails g koudoku:install user
     rake db:migrate
     
+Add the following to `app/views/layouts/application.html.erb` before your `<head>` tag closes:
+
+    <%= yield :koudoku %>
+    
+(This allows us to inject a Stripe `<script>` tag in the correct place. If you don't, the payment form will not work.)
+  
 After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
     Plan.create({

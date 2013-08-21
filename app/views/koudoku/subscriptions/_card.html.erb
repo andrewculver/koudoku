@@ -1,4 +1,6 @@
+<% content_for :koudoku do %>
 <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+<% end %>
 
 <%= form_for @subscription, url: url, html: {id: 'payment-form', class: 'form-horizontal'} do |f| %>
 
@@ -52,8 +54,6 @@
   // All this code taken from Stripe's own examples at:
   // https://stripe.com/docs/tutorials/forms .
   
-  Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
-
   function stripeResponseHandler(status, response) {
 
       if (response.error) {
@@ -73,6 +73,8 @@
   }
 
   $(document).ready(function() {
+
+    Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
     
     // By default, don't show errors.
     $(".payment-errors").hide()
