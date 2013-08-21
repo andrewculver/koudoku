@@ -3,8 +3,6 @@ module Koudoku::Subscription
 
   included do
 
-    attr_accessible :plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four
-
     # We don't store these one-time use tokens, but this is what Stripe provides
     # client-side after storing the credit card information.
     attr_accessor :credit_card_token
@@ -58,7 +56,6 @@ module Koudoku::Subscription
 
         # otherwise
         else
-
           # if a new plan has been selected
           if self.plan.present?
 
@@ -94,7 +91,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.active_card.last4
+            self.last_four = customer.cards.retrieve(customer.default_card).last4
 
             finalize_new_subscription!
             finalize_upgrade!
@@ -125,8 +122,7 @@ module Koudoku::Subscription
         customer.save
 
         # update the last four based on this new card.
-        self.last_four = customer.active_card.last4
-        
+        self.last_four = customer.cards.retrieve(customer.default_card).last4
         finalize_card_update!
 
       end

@@ -83,7 +83,7 @@ module Koudoku
     end
 
     def create
-      @subscription = ::Subscription.new(params[:subscription])
+      @subscription = ::Subscription.new(subscription_params)
       @subscription.user = @owner
       if @subscription.save
         flash[:notice] = "You've been successfully upgraded."
@@ -108,7 +108,7 @@ module Koudoku
     end
 
     def update
-      if @subscription.update_attributes(params[:subscription])
+      if @subscription.update_attributes(subscription_params)
         flash[:notice] = "You've successfully updated your subscription."
         redirect_to owner_subscription_path(@owner, @subscription)
       else
@@ -117,5 +117,9 @@ module Koudoku
       end
     end
 
+    private
+    def subscription_params
+      params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four)
+    end
   end
 end
