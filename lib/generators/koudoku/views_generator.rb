@@ -18,7 +18,7 @@ module Koudoku
 
     def install
       
-      ["_pricing_table.html.erb", "edit.html.erb", "index.html.erb", "new.html.erb", "show.html.erb"].each do |file|
+      ["_card.html.erb","_pricing_table.html.erb", "edit.html.erb", "index.html.erb", "new.html.erb", "show.html.erb"].each do |file|
         copy_file file, "app/views/koudoku/subscriptions/#{file}"
       end
 
