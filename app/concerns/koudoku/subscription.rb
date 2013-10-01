@@ -69,6 +69,7 @@ module Koudoku::Subscription
 
               customer_attributes = {
                 description: subscription_owner_description,
+                email: subscription_owner_email,
                 card: credit_card_token, # obtained with Stripe.js
                 plan: plan.stripe_id
               }
@@ -165,6 +166,10 @@ module Koudoku::Subscription
     # assuming owner responds to name.
     # we should check for whether it responds to this or not.
     "#{subscription_owner.id}"
+  end
+
+  def subscription_owner_email
+    nil
   end
 
   def changing_plans?
