@@ -10,7 +10,7 @@ module Koudoku
     end
 
     def unauthorized
-      render status: 401, template: "koudoku/errors/unauthorized"
+      render status: 401, template: "koudoku/subscriptions/unauthorized"
       false
     end
 
@@ -30,7 +30,8 @@ module Koudoku
 
     def load_subscription
       ownership_attribute = (Koudoku.subscriptions_owned_by.to_s + "_id").to_sym
-      @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find(params[:id])
+      @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
+      return @subscription.present? ? @subscription : unauthorized
     end
 
     # the following two methods allow us to show the pricing table before someone has an account.
