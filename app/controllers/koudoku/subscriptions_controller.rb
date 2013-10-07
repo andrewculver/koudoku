@@ -9,9 +9,19 @@ module Koudoku
       @plans = ::Plan.order(:price)
     end
 
+    def unauthorized
+      render status: 401, template: "koudoku/errors/unauthorized"
+      false
+    end
+
     def load_owner
-      # e.g. User.find(params[:user_id])
-      @owner = Koudoku.owner_class.find(params[:owner_id]) unless params[:owner_id].nil?
+      unless params[:owner_id].nil?
+        if current_owner.try(:id) == params[:owner_id].try(:to_i)
+          @owner = current_owner
+        else
+          return unauthorized
+        end
+      end
     end
 
     def no_owner?
@@ -19,7 +29,8 @@ module Koudoku
     end
 
     def load_subscription
-      @subscription = ::Subscription.find(params[:id])
+      ownership_attribute = (Koudoku.subscriptions_owned_by.to_s + "_id").to_sym
+      @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find(params[:id])
     end
 
     # the following two methods allow us to show the pricing table before someone has an account.
