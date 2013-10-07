@@ -42,7 +42,7 @@ module Koudoku
       end
 
       # Load all plans.
-      @plans = ::Plan.order(:display_order).all
+      @plans = ::Plan.order(:display_order)
       
       # Don't prep a subscription unless a user is authenticated.
       unless no_owner?
