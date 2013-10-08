@@ -1,5 +1,6 @@
 module Koudoku
   class SubscriptionsController < ApplicationController
+    before_filter :authenticate_user!
     before_filter :load_owner
     before_filter :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
     before_filter :load_subscription, only: [:show, :cancel, :edit, :update]
@@ -42,7 +43,7 @@ module Koudoku
       end
 
       # Load all plans.
-      @plans = ::Plan.order(:display_order).all
+      @plans = ::Plan.order(:display_order)
       
       # Don't prep a subscription unless a user is authenticated.
       unless no_owner?
