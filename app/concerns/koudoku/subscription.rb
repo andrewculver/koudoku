@@ -70,7 +70,8 @@ module Koudoku::Subscription
               customer_attributes = {
                 description: subscription_owner_description,
                 card: credit_card_token, # obtained with Stripe.js
-                plan: plan.stripe_id
+                plan: plan.stripe_id,
+                email: subscription_owner_email
               }
 
               # If the class we're being included in supports coupons ..
@@ -165,6 +166,9 @@ module Koudoku::Subscription
     # assuming owner responds to name.
     # we should check for whether it responds to this or not.
     "#{subscription_owner.id}"
+  end
+  
+  def subscription_owner_email
   end
 
   def changing_plans?
