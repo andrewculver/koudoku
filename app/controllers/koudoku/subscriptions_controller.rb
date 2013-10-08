@@ -1,5 +1,6 @@
 module Koudoku
   class SubscriptionsController < ApplicationController
+    before_filter :authenticate_user!
     before_filter :load_owner
     before_filter :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
     before_filter :load_subscription, only: [:show, :cancel, :edit, :update]
