@@ -95,7 +95,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.cards.retrieve(customer.default_card).last4  unless credit_card_token.blank?
+            self.last_four = customer.cards.retrieve(customer.default_card).last4  if customer.cards.count > 0
 
             finalize_new_subscription!
             finalize_upgrade!
