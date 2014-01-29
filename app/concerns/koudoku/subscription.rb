@@ -73,7 +73,7 @@ module Koudoku::Subscription
                 email: subscription_owner_email,
                 plan: plan.stripe_id
               }
-              if plan.price > 0.0 and !credit_card_token.blank?
+              if plan.price > 0.0 and credit_card_token.present?
                 customer_attributes[:card] = credit_card_token # obtained with Stripe.js
               end
 
@@ -95,7 +95,9 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.cards.retrieve(customer.default_card).last4  if customer.cards.count > 0
+            if customer.cards.count > 0
+              self.last_four = customer.cards.retrieve(customer.default_card).last4
+            end
 
             finalize_new_subscription!
             finalize_upgrade!
