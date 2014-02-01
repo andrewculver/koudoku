@@ -16,8 +16,27 @@ module Koudoku
 
     def load_owner
       unless params[:owner_id].nil?
-        if current_owner.try(:id) == params[:owner_id].try(:to_i)
-          @owner = current_owner
+        if current_owner.present?
+          
+          # we need to try and look this owner up via the find method so that we're
+          # taking advantage of any override of the find method that would be provided
+          # by older versions of friendly_id. (support for newer versions default behavior
+          # below.)
+          searched_owner = current_owner.class.find(params[:owner_id]) rescue nil
+          
+          # if we couldn't find them that way, check whether there is a new version of
+          # friendly_id in place that we can use to look them up by their slug.
+          # in christoph's words, "why?!" in my words, "warum?!!!"
+          # (we debugged this together on skype.)
+          if searched_owner.nil? && current_owner.class.respond_to?(:friendly)
+            searched_owner = current_owner.class.friendly.find(params[:owner_id]) rescue nil
+          end
+          
+          if current_owner.try(:id) == searched_owner.try(:id)
+            @owner = current_owner
+          else
+            return unauthorized
+          end
         else
           return unauthorized
         end
