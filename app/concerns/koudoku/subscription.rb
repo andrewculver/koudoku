@@ -177,6 +177,7 @@ module Koudoku::Subscription
 
   def subscription_owner_email
     "#{subscription_owner.try(:email)}"
+    
   end
 
   def changing_plans?
