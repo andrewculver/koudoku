@@ -115,7 +115,7 @@ module Koudoku
 
     def create
       @subscription = ::Subscription.new(subscription_params)
-      @subscription.user = @owner
+      @subscription.send Koudoku.owner_assignment_sym, @owner
       if @subscription.save
         flash[:notice] = "You've been successfully upgraded."
         redirect_to owner_subscription_path(@owner, @subscription)
