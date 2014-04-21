@@ -32,7 +32,7 @@ Koudoku.setup do |config|
   config.subscriptions_owned_by = :user
   config.stripe_publishable_key = ENV['STRIPE_PUBLISHABLE_KEY']
   config.stripe_secret_key = ENV['STRIPE_SECRET_KEY']
-  # config.prorate = false
+  # config.prorate = false # Default is true, set to false to disable prorating subscriptions
   # config.free_trial_length = 30
 end
 RUBY

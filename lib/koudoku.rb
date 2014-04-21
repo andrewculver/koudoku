@@ -20,7 +20,7 @@ module Koudoku
   @@free_trial_length = nil
 
   mattr_accessor :prorate
-  @@prorate = false
+  @@prorate = true
 
   def self.setup
     yield self
