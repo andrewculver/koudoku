@@ -10,7 +10,7 @@ module Koudoku
   class InstallGenerator < Rails::Generators::Base
 
     # Not sure what this does.
-    source_root File.expand_path("../../../../app/views/koudoku/subscriptions", __FILE__)
+    source_root "#{Koudoku::Engine.root}/app/views/koudoku/subscriptions"
 
     include Rails::Generators::Migration
 
