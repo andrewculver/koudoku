@@ -122,7 +122,7 @@ module Koudoku
           "You've been successfully upgraded."
         redirect_to( 
           (::ApplicationController.respond_to?(:after_new_subscription_path) ? 
-            ::ApplicationController.try(:after_new_subscription_path, {owner: @owner, subscription: @subscription}) : 
+            ::ApplicationController.try(:after_new_subscription_path, @owner, @subscription) : 
             owner_subscription_path(@owner, @subscription)
           )
         ) # EO redirect_to
