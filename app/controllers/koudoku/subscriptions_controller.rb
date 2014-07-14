@@ -117,8 +117,15 @@ module Koudoku
       @subscription.subscription_owner = @owner
 
       if @subscription.save
-        flash[:notice] = "You've been successfully upgraded."
-        redirect_to owner_subscription_path(@owner, @subscription)
+        flash[:notice] = ::ApplicationController.respond_to?(:new_subscription_notice_message) ? 
+          ::ApplicationController.try(:new_subscription_notice_message) : 
+          "You've been successfully upgraded."
+        redirect_to( 
+          (::ApplicationController.respond_to?(:after_new_subscription_path) ? 
+            ::ApplicationController.try(:after_new_subscription_path, {owner: @owner, subscription: @subscription}) : 
+            owner_subscription_path(@owner, @subscription)
+          )
+        ) # EO redirect_to
       else
         flash[:error] = 'There was a problem processing this transaction.'
         render :new
