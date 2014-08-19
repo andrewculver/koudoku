@@ -10,21 +10,28 @@ To see an example of Koudoku in action, please visit [Koudoku.org](http://koudok
 
 Include the following in your `Gemfile`:
 
+```ruby
     gem 'koudoku'
-    
+```    
+
 After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
+```ruby
     rails g koudoku:install user
     rake db:migrate
+```
     
 Add the following to `app/views/layouts/application.html.erb` before your `<head>` tag closes:
 
+```ruby
     <%= yield :koudoku %>
+```
     
 (This allows us to inject a Stripe `<script>` tag in the correct place. If you don't, the payment form will not work.)
   
 After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
+```ruby
     Plan.create({
       name: 'Personal',
       price: 10.00,
@@ -52,7 +59,8 @@ After installing, you'll need to add some subscription plans. (You can see an ex
       features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"), 
       display_order: 3
     })
-    
+```    
+
 To help you understand the attributes:
     
 | Attribute       | Type    | Function |
@@ -73,56 +81,74 @@ You can supply your publishable and secret API keys in `config/initializers/koud
 
 In a bash shell, you can set them in `~/.bash_profile` like so:
 
+```bash
     export STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
     export STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
+```
     
 (Reload your terminal for these settings to take effect.)
     
 On Heroku you accomplish this same effect with [Config Vars](https://devcenter.heroku.com/articles/config-vars):
 
+```bash
     heroku config:add STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
     heroku config:add STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
-    
+```    
+
 ## User-Facing Subscription Management
 
 By default a `pricing_path` route is defined which you can link to in order to show visitors a pricing table. If a user is signed in, this pricing table will take into account their current plan. For example, you can link to this page like so:
 
+```ruby
     <%= link_to 'Pricing', main_app.pricing_path %>
-    
+```   
+   
 (Note: Koudoku uses the application layout, so it's important that application paths referenced in that layout are prefixed with "`main_app.`" like you see above or Rails will try to look the paths up in the Koudoku engine instead of your application.)
 
 Existing users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
 
+```ruby
     koudoku.owner_subscriptions_path(@user)
-  
+```
+
 In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
 
 A number of views are provided by default. To customize the views, use the following generator:
 
+```ruby
     rails g koudoku:views
+```
 
 ### Pricing Table
 
 Koudoku ships with a stock pricing table. By default it depends on Twitter Bootstrap, but also has some additional styles required. In order to import these styles, add the following to your `app/assets/stylesheets/application.css`:
 
+```css
     *= require 'koudoku/pricing-table'
-    
+```  
+  
 Or, if you've replaced your `application.css` with an `application.scss` (like I always do):
 
+```css
     @import "koudoku/pricing-table"
-    
+``` 
+   
 ## Using Coupons
 
 While more robust coupon support is expected in the future, the simple way to use a coupon is to first create it:
 
+```ruby
     coupon = Coupon.create(code: '30-days-free', free_trial_length: 30)
-    
+```   
+   
 Then assign it to a _new_ subscription before saving:
 
+```ruby
     subscription = Subscription.new(...)
     subscription.coupon = coupon
     subscription.save
-    
+```    
+
 It should be noted that these coupons are different from the coupons provided natively by Stripe.
     
 ## Implementing Logging, Notifications, etc.
