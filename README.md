@@ -14,17 +14,22 @@ Include the following in your `Gemfile`:
     
 After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
+```ruby
     rails g koudoku:install user
     rake db:migrate
+```
     
 Add the following to `app/views/layouts/application.html.erb` before your `<head>` tag closes:
 
+```ruby
     <%= yield :koudoku %>
+```
     
 (This allows us to inject a Stripe `<script>` tag in the correct place. If you don't, the payment form will not work.)
   
 After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
+```ruby
     Plan.create({
       name: 'Personal',
       price: 10.00,
@@ -52,7 +57,8 @@ After installing, you'll need to add some subscription plans. (You can see an ex
       features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"), 
       display_order: 3
     })
-    
+```    
+
 To help you understand the attributes:
     
 | Attribute       | Type    | Function |
@@ -119,10 +125,12 @@ While more robust coupon support is expected in the future, the simple way to us
     
 Then assign it to a _new_ subscription before saving:
 
+```ruby
     subscription = Subscription.new(...)
     subscription.coupon = coupon
     subscription.save
-    
+```    
+
 It should be noted that these coupons are different from the coupons provided natively by Stripe.
     
 ## Implementing Logging, Notifications, etc.
