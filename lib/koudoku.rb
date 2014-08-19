@@ -18,7 +18,10 @@ module Koudoku
   
   mattr_accessor :free_trial_length
   @@free_trial_length = nil
-  
+
+  mattr_accessor :prorate
+  @@prorate = true
+
   def self.setup
     yield self
     
@@ -51,5 +54,5 @@ module Koudoku
   def self.free_trial?
     free_trial_length.to_i > 0
   end
-  
+
 end
