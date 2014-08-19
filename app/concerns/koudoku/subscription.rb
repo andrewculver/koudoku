@@ -164,6 +164,11 @@ module Koudoku::Subscription
     send Koudoku.subscriptions_owned_by
   end
 
+  def subscription_owner=(owner)
+    # e.g. @subscription.user = @owner
+    send Koudoku.owner_assignment_sym, owner
+  end
+
   def subscription_owner_description
     # assuming owner responds to name.
     # we should check for whether it responds to this or not.

@@ -79,8 +79,7 @@ module Koudoku
       unless no_owner?
         # we should also set the owner of the subscription here.
         @subscription = ::Subscription.new({Koudoku.owner_id_sym => @owner.id})
-        # e.g. @subscription.user = @owner
-        @subscription.send Koudoku.owner_assignment_sym, @owner
+        @subscription.subscription_owner = @owner
       end
 
     end
@@ -115,7 +114,8 @@ module Koudoku
 
     def create
       @subscription = ::Subscription.new(subscription_params)
-      @subscription.user = @owner
+      @subscription.subscription_owner = @owner
+
       if @subscription.save
         flash[:notice] = "You've been successfully upgraded."
         redirect_to owner_subscription_path(@owner, @subscription)
