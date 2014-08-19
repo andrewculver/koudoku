@@ -169,7 +169,8 @@ module Koudoku::Subscription
   end
 
   def subscription_owner_email
-    nil
+	# returns subscription_owner.email - if object responds to :email method
+	subscription_owner.try(:email)
   end
 
   def changing_plans?
