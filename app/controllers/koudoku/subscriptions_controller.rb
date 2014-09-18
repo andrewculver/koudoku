@@ -115,7 +115,8 @@ module Koudoku
     def create
       @subscription = ::Subscription.new(subscription_params)
       @subscription.subscription_owner = @owner
-
+      @subscription.coupon_code = session[:koudoku_coupon_code]
+      
       if @subscription.save
         flash[:notice] = "You've been successfully upgraded."
         redirect_to owner_subscription_path(@owner, @subscription)
