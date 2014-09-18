@@ -79,6 +79,8 @@ module Koudoku::Subscription
                   customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
                 end
               end
+              
+              customer_attributes[:coupon] = session[:koudoku_coupon_code] if session[:koudoku_coupon_code] 
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
