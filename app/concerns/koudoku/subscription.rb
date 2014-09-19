@@ -80,7 +80,7 @@ module Koudoku::Subscription
                 end
               end
               
-              customer_attributes[:coupon] = session[:koudoku_coupon_code] if session[:koudoku_coupon_code] 
+              customer_attributes[:coupon] = @coupon_code if @coupon_code 
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
@@ -157,6 +157,12 @@ module Koudoku::Subscription
         "Downgrade"
       end
     end
+  end
+  
+  # Set a Stripe coupon code that will be used when a new Stripe customer (a.k.a. Koudoku subscription)
+  # is created
+  def coupon_code=(new_code)
+    @coupon_code = new_code
   end
 
   # Pretty sure this wouldn't conflict with anything someone would put in their model
