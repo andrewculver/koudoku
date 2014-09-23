@@ -140,7 +140,7 @@ module Koudoku
     end
 
     def update
-      @subscription.prorate = Koudoku.prorate
+      #@subscription.prorate = Koudoku.prorate
       if @subscription.update_attributes(subscription_params)
         flash[:notice] = "You've successfully updated your subscription."
         redirect_to owner_subscription_path(@owner, @subscription)
