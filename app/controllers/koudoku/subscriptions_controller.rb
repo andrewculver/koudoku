@@ -61,7 +61,9 @@ module Koudoku
     end
 
     def redirect_to_sign_up
-      session["#{Koudoku.subscriptions_owned_by.to_s}_return_to"] = new_subscription_path(plan: params[:plan])
+      # this is a Devise default variable and thus should not change its name
+      # when we change subscription owners from :user to :company 
+      session["user_return_to"] = new_subscription_path(plan: params[:plan])
       redirect_to new_registration_path(Koudoku.subscriptions_owned_by.to_s)
     end
 
