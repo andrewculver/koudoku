@@ -1,5 +1,5 @@
 <% content_for :koudoku do %>
-<script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <% end %>
 
 <%= form_for @subscription, url: url, html: {id: 'payment-form', class: 'form-horizontal'} do |f| %>
