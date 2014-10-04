@@ -62,7 +62,7 @@ module Koudoku
 
     def redirect_to_sign_up
       session["#{Koudoku.subscriptions_owned_by.to_s}_return_to"] = new_subscription_path(plan: params[:plan])
-      redirect_to new_registration_path(Koudoku.subscriptions_owned_by.to_s)
+      redirect_to new_registration_path(Koudoku.subscriptions_owned_by.to_sym)
     end
 
     def index
