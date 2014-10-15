@@ -60,8 +60,8 @@ RUBY
       end
 
       # Add webhooks to the route.
-      gsub_file "config/routes.rb", /application.routes.draw do/,  <<-RUBY
-application.routes.draw do
+      
+      route <<-RUBY
 
   # Added by Koudoku.
   mount Koudoku::Engine, at: 'koudoku'
