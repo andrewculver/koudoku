@@ -41,6 +41,7 @@ RUBY
       # Generate subscription.
       generate("model", "subscription stripe_id:string plan_id:integer last_four:string coupon_id:integer card_type:string current_price:float #{subscription_owner_model}_id:integer")
       gsub_file "app/models/subscription.rb", /ActiveRecord::Base/, "ActiveRecord::Base\n  include Koudoku::Subscription\n\n  belongs_to :#{subscription_owner_model}\n  belongs_to :coupon\n"
+	  inject_into_file("app/models/subscription.rb", "  attr_accessible :credit_card_token\n", :before => 'end') if Rails::VERSION::STRING.start_with? '3'
       
       # Add the plans.
       generate("model", "plan name:string stripe_id:string price:float interval:string features:text highlight:boolean display_order:integer")
