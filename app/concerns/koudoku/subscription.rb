@@ -34,7 +34,7 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id)
+            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -86,7 +86,7 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => plan.stripe_id)
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
