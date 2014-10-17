@@ -16,11 +16,11 @@ rvm:
 matrix:
   include:
     - rvm: jruby-19mode
-    env: JRUBY_OPTS="$JRUBY_OPTS --debug"
-                        - rvm: jruby-head
-                        env: JRUBY_OPTS="$JRUBY_OPTS --debug"
-                        allow_failures:
-                          - rvm: jruby-head
-                          - rvm: ruby-head
-                          - rvm: rbx
-                          fast_finish: true
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+    - rvm: jruby-head
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug"
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: ruby-head
+    - rvm: rbx
+  fast_finish: true
