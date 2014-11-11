@@ -136,9 +136,6 @@ module Koudoku::Subscription
 
   end
 
-  module ClassMethods
-  end
-
   def describe_difference(plan_to_describe)
     if plan.nil?
       if persisted?
