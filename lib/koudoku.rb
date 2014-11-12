@@ -36,18 +36,16 @@ module Koudoku
   
   # e.g. :user_id
   def self.owner_id_sym
-    # e.g. :user_id
-    (Koudoku.subscriptions_owned_by.to_s + '_id').to_sym
+    :"#{Koudoku.subscriptions_owned_by}_id'"
   end
   
+  # e.g. :user=
   def self.owner_assignment_sym
-    # e.g. :user=
-    (Koudoku.subscriptions_owned_by.to_s + '=').to_sym
+    :"#{Koudoku.subscriptions_owned_by}="
   end
 
-  # e.g. Users
+  # e.g. User
   def self.owner_class
-    # e.g. User
     Koudoku.subscriptions_owned_by.to_s.classify.constantize
   end
   
