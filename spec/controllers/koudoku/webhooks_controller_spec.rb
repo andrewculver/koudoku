@@ -3,74 +3,113 @@ require 'spec_helper'
 describe Koudoku::WebhooksController do
 
   before do
-
     # disable any interaction with stripe for these tests.
-    Subscription.any_instance.stub(:processing!).and_return(true)
-    
+    allow_any_instance_of(Subscription).to receive(:processing!) { true }
   end
+      
+  describe "POST create" do
+
+    let(:customer_id) { subscription.stripe_id }
+    let(:api_key) { Koudoku.webhooks_api_key }
+
+    def create_webhooks(opts={})
+      raw_post(
+        :create,
+        { use_route: 'koudoku', api_key: api_key },
+        webhooks_json(event_type, total: '1234', customer: customer_id)
+      )
+    end
   
-  describe 'when a valid subscription exists' do
-    before do
+    describe 'when a valid subscription exists' do
+
       # here is the corresponding customer in our database.
-      @customer = Customer.create(email: 'andrew.culver@gmail.com')
-      @subscription = Subscription.create(customer_id: @customer.id, stripe_id: 'customer-id')
-      # make sure they get this exact instance.
-      Subscription.stub('find_by_stripe_id').and_return(@subscription)
-    end
-    describe "invoice.payment_succeeded" do
-      describe "POST create" do
+      let!(:customer) { Customer.create!(email: 'andrew.culver@gmail.com') }
+      let!(:subscription) { 
+        Subscription.create!(customer_id: customer.id, stripe_id: 'customer-id')
+      }
+
+      before do
+        original_method = Subscription.method(:find_by!)
+        allow(Subscription).to receive 'find_by!' do |hash|
+          if hash[:stripe_id] == subscription.stripe_id
+            # Make sure we get this exact instance, so we can set expectations
+            subscription
+          else
+            original_method.call(*args)
+          end
+        end
+      end
+      
+      describe "when type is invoice.payment_succeeded" do
+        let(:event_type) { "invoice.payment_succeeded" }
+
         it 'calls payment_succeeded for the subscription' do
-          @subscription.should_receive(:payment_succeeded).once
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('invoice.payment_succeeded', total: '1234', customer: @subscription.stripe_id)
+          expect(subscription).to receive(:payment_succeeded).once
+          create_webhooks
         end
+
         it 'returns 200' do
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('invoice.payment_succeeded', total: '1234', customer: @subscription.stripe_id)
-          response.code.should eq("200") 
+          create_webhooks
+          expect(response.code).to eq("200") 
         end
       end
-    end
-    describe "charge.failed" do
-      describe "POST create" do
+
+
+      describe "when type is charge.failed" do
+        let(:event_type) { "charge.failed" }
+
         it 'calls charge_failed for the subscription' do
-          @subscription.should_receive(:charge_failed).once
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('charge.failed', customer: @subscription.stripe_id)
+          expect(subscription).to receive(:charge_failed).once
+          create_webhooks
         end
+
         it 'returns 200' do
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('charge.failed', customer: @subscription.stripe_id)
-          response.code.should eq("200") 
+          expect(response.code).to eq("200") 
         end
       end
-    end
-    describe "charge.dispute.created" do
-      describe "POST create" do
+
+
+      describe "when type is charge.dispute.created" do
+        let(:event_type) { "charge.dispute.created" }
+
         it 'calls charge_disputed for the subscription' do
-          @subscription.should_receive(:charge_disputed).once
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('charge.dispute.created', customer: @subscription.stripe_id)
+          expect(subscription).to receive(:charge_disputed).once
+          create_webhooks
         end
+
         it 'returns 200' do
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('charge.dispute.created', customer: @subscription.stripe_id)
-          response.code.should eq("200") 
+          create_webhooks
+          expect(response.code).to eq("200") 
+        end
+      end
+
+
+      describe "when type is something else" do
+        let(:event_type) { "resource.something_else" }
+
+        describe "when the API key is invalid" do
+          let(:api_key) { "not-the-api-key" }
+
+          it "raises an error" do
+            expect{create_webhooks}.to raise_error
+          end
+        end
+
+        describe "when the API key is valid" do
+          it "does not raise an error" do
+            expect{create_webhooks}.to_not raise_error
+          end
         end
       end
     end
-  end
-  it 'returns an error if the subscription can not be found' do
-    expect {
-      raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('invoice.payment_succeeded', total: '1234', customer: 'some-random-id')
-    }.to raise_error
-  end
-  describe "everything else" do
-    describe "POST create" do
-      it "should raise an error for invalid api keys" do
-        expect {
-          raw_post :create, {use_route: 'koudoku', api_key: 'not-the-api-key'}, webhooks_json('resource.something_else', total: '1234')
-        }.to raise_error
-      end
-      it "should not raise an error for valid api keys" do
-        expect {
-          raw_post :create, {use_route: 'koudoku', api_key: Koudoku.webhooks_api_key}, webhooks_json('resource.something_else', total: '1234')
-        }.to_not raise_error
+
+    describe "when the subscription can not be found" do
+      let(:customer_id) { "some-random-id" }
+      let(:event_type) { "invoice.payment_succeeded" }
+      it "raises an error" do
+        expect{create_webhooks}.to raise_error
       end
     end
+
   end
 end
