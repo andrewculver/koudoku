@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe Koudoku::ApplicationHelper do
+describe Koudoku::ApplicationHelper, :type => :helper do
   describe "#plan_price" do
     it "includes the price and defaults to monthly" do
       plan = Plan.new(price: 12.34)
