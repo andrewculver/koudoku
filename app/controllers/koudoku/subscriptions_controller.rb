@@ -48,7 +48,7 @@ module Koudoku
     end
 
     def load_subscription
-      ownership_attribute = (Koudoku.subscriptions_owned_by.to_s + "_id").to_sym
+      ownership_attribute = :"#{Koudoku.subscriptions_owned_by}_id"
       @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
       return @subscription.present? ? @subscription : unauthorized
     end
@@ -57,7 +57,7 @@ module Koudoku
     # by default these support devise, but they can be overriden to support others.
     def current_owner
       # e.g. "self.current_user"
-      send "current_#{Koudoku.subscriptions_owned_by.to_s}"
+      send "current_#{Koudoku.subscriptions_owned_by}"
     end
 
     def redirect_to_sign_up
