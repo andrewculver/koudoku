@@ -36,7 +36,7 @@ module Koudoku
   
   # e.g. :user_id
   def self.owner_id_sym
-    :"#{Koudoku.subscriptions_owned_by}_id'"
+    :"#{Koudoku.subscriptions_owned_by}_id"
   end
   
   # e.g. :user=
