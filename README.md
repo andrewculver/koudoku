@@ -1,5 +1,7 @@
 # Koudoku
 
+[![Gem Version](https://badge.fury.io/rb/koudoku.png)](https://rubygems.org/gems/koudoku) [![Code Climate](https://codeclimate.com/github/andrewculver/koudoku.png)](https://codeclimate.com/github/andrewculver/koudoku) [![Build Status](https://travis-ci.org/andrewculver/koudoku.png)](https://travis-ci.org/andrewculver/koudoku)
+
 Robust subscription support for Ruby on Rails apps using [Stripe](https://stripe.com), including out-of-the-box pricing pages, payment pages, and  subscription management for your customers. Also makes it easy to manage logic related to new subscriptions, upgrades, downgrades, cancellations, payment failures, and streamlines hooking up notifications, metrics logging, etc.
 
 To see an example of Koudoku in action, please visit [Koudoku.org](http://koudoku.org/).
