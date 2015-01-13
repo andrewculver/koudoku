@@ -1,4 +1,4 @@
-class ActiveRecord::Base
+class Coupon < ActiveRecord::Base
   
   has_many :subscriptions
 
