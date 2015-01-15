@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/andrewculver/koudoku"
   s.summary     = %q{Robust subscription support for Rails with Stripe.}
   s.description = %q{Robust subscription support for Rails with Stripe. Provides package levels, coupons, logging, notifications, etc.}
+  s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["spec/**/*"]
