@@ -165,10 +165,8 @@ module Koudoku
     end
     
     def after_new_subscription_path
-      controller = ::ApplicationController.new
-      controller.respond_to?(:after_new_subscription_path) ? 
-            controller.try(:after_new_subscription_path, @owner, @subscription) : 
-            owner_subscription_path(@owner, @subscription)
+      return super if defined?(super)
+      owner_subscription_path(@owner, @subscription)
     end
     
     def after_new_subscription_message
