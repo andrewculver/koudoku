@@ -13,8 +13,9 @@ To see an example of Koudoku in action, please visit [Koudoku.org](http://koudok
 Include the following in your `Gemfile`:
 
 ```ruby
-    gem 'koudoku'
+    gem 'koudoku', :git => 'https://github.com/andrewculver/koudoku.git'
 ```    
+**Note: ** For the time being, please use this repository directly and do *NOT* use the gem from RubyGems. The gem is really out of date and causing all kinds of trouble 
 
 After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
