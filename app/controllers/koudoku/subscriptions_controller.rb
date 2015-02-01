@@ -165,7 +165,7 @@ module Koudoku
     end
     
     def after_new_subscription_path
-      return super if defined?(super)
+      return super(@owner, @subscription) if defined?(super)
       owner_subscription_path(@owner, @subscription)
     end
     
