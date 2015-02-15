@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails"
   s.add_dependency "stripe"
+  s.add_dependency "stripe_event"
   s.add_dependency "bluecloth"
 
   s.add_development_dependency "jquery-rails"
@@ -29,6 +30,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry'
 
   s.post_install_message = <<-EOS
+
+**** BREAKING CHANGE ****
+**** BREAKING CHANGE ****
+Koudokus support for webhooks has changed, please make sure to follow instructions in changelog
+**** BREAKING CHANGE ****
+**** BREAKING CHANGE ****
 
 Koudoku is still in early development, so if this installation is an upgrade
 from an earlier version, be sure to check the CHANGELOG for any instructions
