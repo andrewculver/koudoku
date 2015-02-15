@@ -176,14 +176,22 @@ Be sure to include a call to `super` in each of your implementations, especially
 
 Between `prepare_for_*` and `finalize_*`, so far I've used `finalize_*` almost exclusively. The difference is that `prepare_for_*` runs before we settle things with Stripe, and `finalize_*` runs after everything is settled in Stripe. For that reason, please be sure not to implement anything in `finalize_*` implementations that might cause issues with ActiveRecord saving the updated state of the subscription.
 
-### Stripe Webhooks
+### Webhooks
 
-During the installation process, a path and API key will be printed out that you can configure in the Stripe account panel that will allow your application to receive information about recurring transactions as they happen. (These are useful for reacting to expired credit cards on file and revenue tracking.)
+We use [stripe_event](https://github.com/integrallis/stripe_event) under the hood to support webhooks.
+The default webhooks URL is `/koudoku/events`.
 
-Support for Stripe Webhooks is still quite limited. You can implement the following template methods of the `Subscription`:
+You can add your own webhooks using the (reduced) stripe_event syntax in the `config/initializers/koudoku.rb` file: 
 
-  - `payment_succeeded(amount)`
-  - `charge_failed`
-  - `charge_disputed`
+```
+# /config/initializers/koudoku.rb
+Koudoku.setup do |config|
+  config.subscriptions_owned_by = :user
+  config.stripe_publishable_key = ENV['STRIPE_PUBLISHABLE_KEY']
+  config.stripe_secret_key = ENV['STRIPE_SECRET_KEY']
   
-As mentioned before, be sure to call `super` in your implementations. No additional information from Stripe is currently handled from the webhook request body.
+  # add webhooks
+  config.subscribe 'charge.failed', YourChargeFailed
+end
+
+``` 
