@@ -1,12 +1,9 @@
 require "koudoku/engine"
 require "generators/koudoku/install_generator"
 require "generators/koudoku/views_generator"
+require 'stripe_event'
 
 module Koudoku
-
-  mattr_accessor :webhooks_api_key
-  @@webhooks_api_key = nil
-  
   mattr_accessor :subscriptions_owned_by
   @@subscriptions_owned_by = nil
   
@@ -51,6 +48,22 @@ module Koudoku
   
   def self.free_trial?
     free_trial_length.to_i > 0
+  end
+  
+  
+  #
+  # STRIPE_EVENT section
+  #
+  def self.subscribe(name, callable = Proc.new)
+    StripeEvent.subscribe(name, callable)
+  end
+
+  def self.instrument(name, object)
+    StripeEvent.backend.instrument(StripeEvent.namespace.call(name), object)
+  end
+
+  def self.all(callable = Proc.new)
+    StripeEvent.all(callable)
   end
 
 end

@@ -32,8 +32,6 @@ module Koudoku
       end
 
       require "securerandom"
-      @api_key = SecureRandom.uuid
-
       template "config/initializers/koudoku.rb"
 
       # Generate subscription.
@@ -68,7 +66,7 @@ module Koudoku
 RUBY
 
       # Show the user the API key we generated.
-      say "\nTo enable support for Stripe webhooks, point it to \"/koudoku/webhooks?api_key=#{@api_key}\". This API key has been randomly generated, so it's unique to your application.\n\n"
+      say "\nTo enable support for Stripe webhooks, point it to \"/koudoku/events\"."
 
     end
 
