@@ -9,7 +9,6 @@ Koudoku::Engine.routes.draw do
     end
   end
     
-  mount StripeEvent::Engine => '/events'
+  mount StripeEvent::Engine => '/webhooks'
   
-  match '/webhooks', to: redirect('/events'), via: :all
 end

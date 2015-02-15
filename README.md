@@ -179,7 +179,7 @@ Between `prepare_for_*` and `finalize_*`, so far I've used `finalize_*` almost e
 ### Webhooks
 
 We use [stripe_event](https://github.com/integrallis/stripe_event) under the hood to support webhooks.
-The default webhooks URL is `/koudoku/events`.
+The default webhooks URL is `/koudoku/webhooks`.
 
 You can add your own webhooks using the (reduced) stripe_event syntax in the `config/initializers/koudoku.rb` file: 
 

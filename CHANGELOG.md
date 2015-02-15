@@ -7,8 +7,6 @@ You need to follow these instructions even if you do NOT use webhooks:
 
 Go to `config/initializers/koudoku.rb` and remove the line `config.webhooks_api_key= 'XXXX'`
 
-if you use webhooks, the webhook URL has changed as well. It's now at `/[koudoku_mounth_path]/events`. 
-It no longer uses an API key to authenticate
 Please refer to the README.md under the section "webhooks" for more information on how to use the 
 new webhook engine
 
