@@ -10,7 +10,7 @@ module Koudoku
   class ViewsGenerator < Rails::Generators::Base
 
     # Not sure what this does.
-    source_root File.expand_path("../../../../app/views/koudoku/subscriptions", __FILE__)
+    source_root "#{Koudoku::Engine.root}/app/views/koudoku/subscriptions"
 
     include Rails::Generators::Migration
 
@@ -18,7 +18,10 @@ module Koudoku
 
     def install
       
-      ["_card.html.erb","_pricing_table.html.erb", "edit.html.erb", "index.html.erb", "new.html.erb", "show.html.erb", "unauthorized.html.erb"].each do |file|
+      # all entries in app/views/koudoku/subscriptions without . and .. 
+      # ==> all FILES in the directory
+      files_to_copy = Dir.entries("#{Koudoku::Engine.root}/app/views/koudoku/subscriptions") - %w[. ..]
+      files_to_copy.each do |file|
         copy_file file, "app/views/koudoku/subscriptions/#{file}"
       end
 

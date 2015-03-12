@@ -1,3 +1,15 @@
+## Version 0.0.12 (NOT released on rubygems)
+author: Christoph Engelhardt (@yas4891)
+
+This version has a breaking change regarding webhooks.
+Koudoku now uses stripe_engine under the hood.  
+You need to follow these instructions even if you do NOT use webhooks: 
+
+Go to `config/initializers/koudoku.rb` and remove the line `config.webhooks_api_key= 'XXXX'`
+
+Please refer to the README.md under the section "webhooks" for more information on how to use the 
+new webhook engine
+
 ## Master (Unreleased)
 
 If you're upgrading from previous versions, you *must* add the following to

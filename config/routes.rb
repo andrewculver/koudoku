@@ -8,5 +8,7 @@ Koudoku::Engine.routes.draw do
       end
     end
   end
-  resources :webhooks, only: [:create]
+    
+  mount StripeEvent::Engine => '/webhooks'
+  
 end

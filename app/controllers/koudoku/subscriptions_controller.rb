@@ -16,8 +16,27 @@ module Koudoku
 
     def load_owner
       unless params[:owner_id].nil?
-        if current_owner.try(:id) == params[:owner_id].try(:to_i)
-          @owner = current_owner
+        if current_owner.present?
+          
+          # we need to try and look this owner up via the find method so that we're
+          # taking advantage of any override of the find method that would be provided
+          # by older versions of friendly_id. (support for newer versions default behavior
+          # below.)
+          searched_owner = current_owner.class.find(params[:owner_id]) rescue nil
+          
+          # if we couldn't find them that way, check whether there is a new version of
+          # friendly_id in place that we can use to look them up by their slug.
+          # in christoph's words, "why?!" in my words, "warum?!!!"
+          # (we debugged this together on skype.)
+          if searched_owner.nil? && current_owner.class.respond_to?(:friendly)
+            searched_owner = current_owner.class.friendly.find(params[:owner_id]) rescue nil
+          end
+          
+          if current_owner.try(:id) == searched_owner.try(:id)
+            @owner = current_owner
+          else
+            return unauthorized
+          end
         else
           return unauthorized
         end
@@ -29,7 +48,7 @@ module Koudoku
     end
 
     def load_subscription
-      ownership_attribute = (Koudoku.subscriptions_owned_by.to_s + "_id").to_sym
+      ownership_attribute = :"#{Koudoku.subscriptions_owned_by}_id"
       @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
       return @subscription.present? ? @subscription : unauthorized
     end
@@ -38,11 +57,13 @@ module Koudoku
     # by default these support devise, but they can be overriden to support others.
     def current_owner
       # e.g. "self.current_user"
-      send "current_#{Koudoku.subscriptions_owned_by.to_s}"
+      send "current_#{Koudoku.subscriptions_owned_by}"
     end
 
     def redirect_to_sign_up
-      session["#{Koudoku.subscriptions_owned_by.to_s}_return_to"] = new_subscription_path(plan: params[:plan])
+      # this is a Devise default variable and thus should not change its name
+      # when we change subscription owners from :user to :company 
+      session["user_return_to"] = new_subscription_path(plan: params[:plan])
       redirect_to new_registration_path(Koudoku.subscriptions_owned_by.to_s)
     end
 
@@ -60,8 +81,7 @@ module Koudoku
       unless no_owner?
         # we should also set the owner of the subscription here.
         @subscription = ::Subscription.new({Koudoku.owner_id_sym => @owner.id})
-        # e.g. @subscription.user = @owner
-        @subscription.send Koudoku.owner_assignment_sym, @owner
+        @subscription.subscription_owner = @owner
       end
 
     end
@@ -96,10 +116,12 @@ module Koudoku
 
     def create
       @subscription = ::Subscription.new(subscription_params)
-      @subscription.user = @owner
+      @subscription.subscription_owner = @owner
+      @subscription.coupon_code = session[:koudoku_coupon_code]
+      
       if @subscription.save
-        flash[:notice] = "You've been successfully upgraded."
-        redirect_to owner_subscription_path(@owner, @subscription)
+        flash[:notice] = after_new_subscription_message
+        redirect_to after_new_subscription_path 
       else
         flash[:error] = 'There was a problem processing this transaction.'
         render :new
@@ -140,6 +162,18 @@ module Koudoku
         params[:subscription]
       end
 
+    end
+    
+    def after_new_subscription_path
+      return super(@owner, @subscription) if defined?(super)
+      owner_subscription_path(@owner, @subscription)
+    end
+    
+    def after_new_subscription_message
+      controller = ::ApplicationController.new
+      controller.respond_to?(:new_subscription_notice_message) ? 
+          controller.try(:new_subscription_notice_message) : 
+          "You've been successfully upgraded."
     end
   end
 end
