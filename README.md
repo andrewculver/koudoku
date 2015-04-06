@@ -6,7 +6,7 @@ Robust subscription support for Ruby on Rails apps using [Stripe](https://stripe
 
 To see an example of Koudoku in action, please visit [Koudoku.org](http://koudoku.org/).
 
-<small><a href="http://churnbuster.io"><img src="https://s3.amazonaws.com/andrew-culver-images/churn-buster/koudoku-readme.png" width="196" height="38" alt="Churn Buster" /></a><br>Koudoku is authored and maintained by [Andrew Culver](http://twitter.com/andrewculver). If you find it useful, consider checking out [Churn Buster](http://churnbuster.io). It's designed to help you handle the pain points you'll run into when doing payments at scale.</small>
+<small><a href="http://churnbuster.io"><img src="https://s3.amazonaws.com/andrew-culver-images/churn-buster/koudoku-readme.png" width="196" height="38" alt="Churn Buster" /></a><br>Koudoku is authored and maintained by [Andrew Culver](http://twitter.com/andrewculver) and [Christoph Engelhardt](https://twitter.com/itengelhardt). If you find it useful, consider checking out [Churn Buster](http://churnbuster.io). It's designed to help you handle the pain points you'll run into when doing payments at scale.</small>
 
 ## Installation
 
