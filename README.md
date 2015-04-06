@@ -13,7 +13,7 @@ To see an example of Koudoku in action, please visit [Koudoku.org](http://koudok
 Include the following in your `Gemfile`:
 
 ```ruby
-    gem 'koudoku', :git => 'https://github.com/andrewculver/koudoku.git'
+    gem 'koudoku'
 ```    
 **Note: ** For the time being, please use this repository directly and do *NOT* use the gem from RubyGems. The gem is really out of date and causing all kinds of trouble 
 
