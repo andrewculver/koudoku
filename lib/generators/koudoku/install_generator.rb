@@ -47,7 +47,7 @@ module Koudoku
       template "app/models/coupon.rb"
 
       # Update the owner relationship.
-      inject_into_class "app/models/#{subscription_owner_model}.rb", Plan,
+      inject_into_class "app/models/#{subscription_owner_model}.rb", subscription_owner_model.camelize.constantize,
                         "# Added by Koudoku.\n  has_one :subscription\n\n"
 
       # Install the pricing table.
