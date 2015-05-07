@@ -127,7 +127,7 @@ module Koudoku::Subscription
         customer.save
 
         # update the last four based on this new card.
-        self.last_four = customer.cards.retrieve(customer.default_source).last4
+        self.last_four = customer.sources.retrieve(customer.default_source).last4
         finalize_card_update!
 
       end
