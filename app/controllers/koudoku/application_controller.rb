@@ -1,6 +1,6 @@
 module Koudoku
   class ApplicationController < ::ApplicationController
-    layout 'application'
+    layout Koudoku.layout
     helper :application
   end
 end

@@ -19,6 +19,9 @@ module Koudoku
   mattr_accessor :prorate
   @@prorate = true
 
+  mattr_accessor :layout
+  @@layout = nil
+
   def self.webhooks_api_key=(key)
     raise "Koudoku no longer uses an API key to secure webhooks, please delete the line from \"config/initializers/koudoku.rb\""
   end
@@ -52,6 +55,10 @@ module Koudoku
   
   def self.free_trial?
     free_trial_length.to_i > 0
+  end
+
+  def self.layout
+    layout
   end
   
   
