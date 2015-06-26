@@ -54,7 +54,7 @@ module Koudoku::Subscription
 
           end
 
-        # otherwise
+        # when customer DOES NOT exist in stripe ..
         else
           # if a new plan has been selected
           if self.plan.present?
