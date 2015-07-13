@@ -56,10 +56,6 @@ module Koudoku
   def self.free_trial?
     free_trial_length.to_i > 0
   end
-
-  def self.layout
-    layout
-  end
   
   
   #
