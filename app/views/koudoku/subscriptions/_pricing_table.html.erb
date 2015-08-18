@@ -27,7 +27,7 @@
             <% if Koudoku.free_trial? %>
             <li class='muted'><%= t('koudoku.subscriptions.free_trial_for_days', :days => Koudoku.free_trial_length) %></li>
             <% end %>
-            <%= BlueCloth.new(plan.features.gsub(/\n/, "\n\n")).to_html.gsub(/<(\/?)p>/, '<\1li>').html_safe %>
+            <%= plan.features.html_safe %>
           </ul>
         </div>
       </div>
