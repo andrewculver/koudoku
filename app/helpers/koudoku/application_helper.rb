@@ -22,5 +22,11 @@ module Koudoku
       end
     end
     
+    # returns TRUE if the controller belongs to Koudoku
+    # false in all other cases, for convenience when executing filters 
+    # in the main application
+    def koudoku_controller? 
+      is_a? Koudoku::ApplicationController
+    end
   end
 end
