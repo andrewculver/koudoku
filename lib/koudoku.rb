@@ -26,6 +26,10 @@ module Koudoku
     @@layout || 'application'
   end
   
+  def self.layout=(layout)
+    @@layout = layout
+  end
+  
   def self.webhooks_api_key=(key)
     raise "Koudoku no longer uses an API key to secure webhooks, please delete the line from \"config/initializers/koudoku.rb\""
   end
