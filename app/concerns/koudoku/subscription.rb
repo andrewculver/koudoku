@@ -67,6 +67,7 @@ module Koudoku::Subscription
 
             begin
 
+              raise Koudoku::NilCardToken, "Possible javascript error" if credit_card_token.empty?
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
@@ -79,8 +80,8 @@ module Koudoku::Subscription
                   customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
                 end
               end
-              
-              customer_attributes[:coupon] = @coupon_code if @coupon_code 
+
+              customer_attributes[:coupon] = @coupon_code if @coupon_code
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
@@ -135,8 +136,8 @@ module Koudoku::Subscription
     end
 
   end
-  
-  
+
+
   def describe_difference(plan_to_describe)
     if plan.nil?
       if persisted?
@@ -156,7 +157,7 @@ module Koudoku::Subscription
       end
     end
   end
-  
+
   # Set a Stripe coupon code that will be used when a new Stripe customer (a.k.a. Koudoku subscription)
   # is created
   def coupon_code=(new_code)
