@@ -7,25 +7,25 @@
           <h4><%= plan_price(plan) %></h4>
           <div class="call-to-action">
             <% if @subscription.nil? %>
-              <%= link_to Koudoku.free_trial? ? 'Start Trial' : 'Sign Up', koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
+              <%= link_to Koudoku.free_trial? ? t('koudoku.pricing.start_trial') : t('koudoku.pricing.sign_up'), koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
             <% elsif @subscription.persisted? %>
               <% if @subscription.plan == plan %>
                 <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
-                  <%= f.submit 'Selected', class: "btn btn-large", disabled: 'disabled' %>
+                  <%= f.submit t('koudoku.pricing.plan_selected'), class: "btn btn-large", disabled: 'disabled' %>
                 <% end %>
               <% else %>
                 <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.hidden_field :plan_id, value: plan.id %>
-                  <%= f.submit @subscription.describe_difference(plan), class: "btn btn-success btn-large" %>
+                  <%= f.submit plan_difference(@subscription, plan), class: "btn btn-success btn-large" %>
                 <% end %>
               <% end %>
             <% else %>
-              <%= link_to Koudoku.free_trial? ? 'Start Trial' : 'Upgrade', new_owner_subscription_path(@owner, plan: plan.id), class: "btn btn-success btn-large" %>
+              <%= link_to Koudoku.free_trial? ? t('koudoku.pricing.start_trial') : t('koudoku.pricing.plan_upgrade'), new_owner_subscription_path(@owner, plan: plan.id), class: "btn btn-success btn-large" %>
             <% end %>
           </div>
           <ul class="features">
             <% if Koudoku.free_trial? %>
-            <li class='muted'><%= Koudoku.free_trial_length %>-day Free Trial</li>
+            <li class='muted'><%= t('koudoku.pricing.free_trial_for_days', :days => Koudoku.free_trial_length) %></li>
             <% end %>
             <%= BlueCloth.new(plan.features.gsub(/\n/, "\n\n")).to_html.gsub(/<(\/?)p>/, '<\1li>').html_safe %>
           </ul>

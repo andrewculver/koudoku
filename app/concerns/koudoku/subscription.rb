@@ -136,27 +136,6 @@ module Koudoku::Subscription
 
   end
   
-  
-  def describe_difference(plan_to_describe)
-    if plan.nil?
-      if persisted?
-        "Upgrade"
-      else
-        if Koudoku.free_trial?
-          "Start Trial"
-        else
-          "Upgrade"
-        end
-      end
-    else
-      if plan_to_describe.is_upgrade_from?(plan)
-        "Upgrade"
-      else
-        "Downgrade"
-      end
-    end
-  end
-  
   # Set a Stripe coupon code that will be used when a new Stripe customer (a.k.a. Koudoku subscription)
   # is created
   def coupon_code=(new_code)

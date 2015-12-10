@@ -99,7 +99,7 @@ module Koudoku
           end
           
         else
-          raise "This feature depends on Devise for authentication."
+          raise I18n.t('koudoku.failure.feature_depends_on_devise')
         end
 
       else
@@ -123,7 +123,7 @@ module Koudoku
         flash[:notice] = after_new_subscription_message
         redirect_to after_new_subscription_path 
       else
-        flash[:error] = 'There was a problem processing this transaction.'
+        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
         render :new
       end
     end
@@ -132,7 +132,7 @@ module Koudoku
     end
 
     def cancel
-      flash[:notice] = "You've successfully cancelled your subscription."
+      flash[:notice] = I18n.t('koudoku.confirmations.subscription_cancelled')
       @subscription.plan_id = nil
       @subscription.save
       redirect_to owner_subscription_path(@owner, @subscription)
@@ -143,10 +143,10 @@ module Koudoku
 
     def update
       if @subscription.update_attributes(subscription_params)
-        flash[:notice] = "You've successfully updated your subscription."
+        flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
         redirect_to owner_subscription_path(@owner, @subscription)
       else
-        flash[:error] = 'There was a problem processing this transaction.'
+        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
         render :edit
       end
     end
@@ -172,8 +172,8 @@ module Koudoku
     def after_new_subscription_message
       controller = ::ApplicationController.new
       controller.respond_to?(:new_subscription_notice_message) ? 
-          controller.try(:new_subscription_notice_message) : 
-          "You've been successfully upgraded."
+          controller.try(:new_subscription_notice_message) :
+          I18n.t('koudoku.confirmations.subscription_upgraded')
     end
   end
 end
