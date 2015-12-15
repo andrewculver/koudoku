@@ -5,7 +5,7 @@ module Koudoku::Subscription
 
     # We don't store these one-time use tokens, but this is what Stripe provides
     # client-side after storing the credit card information.
-    attr_accessor :credit_card_token
+    attr_accessor :credit_card_token, :cancel_at_period_end
 
     belongs_to :plan
 
@@ -48,7 +48,7 @@ module Koudoku::Subscription
             self.current_price = nil
 
             # delete the subscription.
-            customer.cancel_subscription
+            customer.cancel_subscription(cancel_at_period_end ? {at_period_end: true} : {})
 
             finalize_cancelation!
 
