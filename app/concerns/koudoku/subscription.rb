@@ -70,7 +70,7 @@ module Koudoku::Subscription
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
+                source: credit_card_token # obtained with Stripe.js
               }
 
               # If the class we're being included in supports coupons ..
@@ -96,7 +96,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.cards.retrieve(customer.default_card).last4
+            self.last_four = customer.sources.retrieve(customer.default_source).last4
 
             finalize_new_subscription!
             finalize_upgrade!
@@ -123,11 +123,11 @@ module Koudoku::Subscription
 
         # fetch the customer.
         customer = Stripe::Customer.retrieve(self.stripe_id)
-        customer.card = self.credit_card_token
+        customer.source = self.credit_card_token
         customer.save
 
         # update the last four based on this new card.
-        self.last_four = customer.cards.retrieve(customer.default_card).last4
+        self.last_four = customer.sources.retrieve(customer.default_source).last4
         finalize_card_update!
 
       end
