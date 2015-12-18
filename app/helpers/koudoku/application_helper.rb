@@ -10,26 +10,6 @@ module Koudoku
       I18n.t("koudoku.plan_intervals.#{interval}")
     end
 
-    def plan_difference(subscription, other_plan)
-      if subscription.plan.nil?
-        if subscription.persisted?
-          I18n.t('koudoku.plan_upgrade')
-        else
-          if Koudoku.free_trial?
-            I18n.t('koudoku.start_trial')
-          else
-            I18n.t('koudoku.plan_upgrade')
-          end
-        end
-      else
-        if other_plan.is_upgrade_from?(subscription.plan)
-          I18n.t('koudoku.plan_upgrade')
-        else
-          I18n.t('koudoku.plan_downgrade')
-        end
-      end
-    end
-
     # returns TRUE if the controller belongs to Koudoku
     # false in all other cases, for convenience when executing filters 
     # in the main application
