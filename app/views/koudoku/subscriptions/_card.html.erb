@@ -9,14 +9,14 @@
     <legend><%= title %></legend>
     
     <div class="control-group">
-      <label class="control-label">Card Number</label>
+      <label class="control-label"><%= t('koudoku.payment.card_number') %></label>
       <div class="controls">
         <input type="text" size="20" autocomplete="off" class="card-number"/>
       </div>
     </div>
 
     <div class="control-group">
-      <label class="control-label">Expiration (MM/YYYY)</label>
+      <label class="control-label"><%= t('koudoku.payment.expiration') %></label>
       <div class="controls">
         <input type="text" size="2" class="card-expiry-month input-mini"/>
         <span> / </span>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="control-group">
-      <label class="control-label">CVC</label>
+      <label class="control-label"><%= t('koudoku.payment.cvc') %></label>
       <div class="controls">
         <input type="text" size="4" autocomplete="off" class="card-cvc input-small"/>
       </div>
@@ -39,11 +39,11 @@
   <div class="control-group">
     <div class="controls">
       <% if Koudoku.free_trial? %>
-        <button type="submit" class="btn btn-primary submit-button">Save Billing Information</button>
+        <button type="submit" class="btn btn-primary submit-button"><%= t('koudoku.payment.save_billing_info') %></button>
       <% else %>
-        <button type="submit" class="btn btn-primary submit-button">Upgrade Your Account</button>
+        <button type="submit" class="btn btn-primary submit-button"><%= t('koudoku.payment.upgrade_account') %></button>
       <% end %>
-      <%= link_to "Cancel", owner_subscriptions_path(@owner), class: 'btn' %>
+      <%= link_to t('koudoku.payment.cancel'), owner_subscriptions_path(@owner), class: 'btn' %>
     </div>
   </div>
 

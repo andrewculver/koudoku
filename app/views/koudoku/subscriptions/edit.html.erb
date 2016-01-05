@@ -1,7 +1,7 @@
 <% if params['update'] == 'card' %>
-  <%= render 'card', title: "Update Your Payment Information", url: owner_subscription_path(@owner, @subscription) %>
+  <%= render 'card', title: t('koudoku.payment.update_payment_information'), url: owner_subscription_path(@owner, @subscription) %>
 <% else %>
-  <h1>What Plan Is Best For You?</h1>
+  <h1><%= t('koudoku.subscriptions.which_plan_is_best') %></h1>
   <%= render 'pricing_table' %>
-  <p>You can also <%= link_to 'cancel your subscription', cancel_owner_subscription_path(@owner, @subscription), method: :post %>.</p>
+  <p><%= t('koudoku.subscriptions.cancel_your_subscription_note_html', :link => (link_to t('koudoku.subscriptions.cancel_your_subscription'), cancel_owner_subscription_path(@owner, @subscription), method: :post)) %></p>
 <% end %>

@@ -1,0 +1,58 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  koudoku:
+    confirmations:
+      feature_depends_on_devise: "This feature depends on Devise for authentication."
+      subscription_cancelled: "You've successfully cancelled your subscription."
+      subscription_updated: "You've successfully updated your subscription."
+      subscription_upgraded: "You've been successfully upgraded."
+    failure:
+      problem_processing_transaction: "There was a problem processing this transaction."
+      unauthorized: "Unauthorized"
+    plan_intervals:
+      month: "month"
+      year: "year"
+      week: "week"
+      6month: "half-year"
+      3month: "quarter"
+    plan_difference:
+      downgrade: "Downgrade"
+      selected: "Selected"
+      start_trial: "Start Trial"
+      upgrade: "Upgrade"
+    payment:
+      cancel: "Cancel"
+      card_number: "Card Number"
+      card_on_file_with_last_four: "The card on file for your account ends with %{last_four}."
+      cvc: "CVC"
+      expiration: "Expiration (MM/YYYY)"
+      payment_information: "Payment Information"
+      save_billing_info: "Save Billing Information"
+      upgrade_account: "Upgrade Your Account"
+      update_payment_information: "Update Your Payment Information"
+    social_proof:
+      testimonial1:
+        person: "Person at Place"
+        quote: "\"Some Great Quote\""
+      testimonial2:
+        person: "Person at Place"
+        quote: "\"This is a great service and you've been the best ever! Thanks!\""
+      testimonial3:
+        person: "Person at Place"
+        quote: "\"I love you guys and you're the best! You're the best!\""
+    subscriptions:
+      cancel_your_subscription: "cancel your subscription"
+      cancel_your_subscription_note_html: "You can also %{link}."
+      choose_other_plan: "Choose Another Plan"
+      choose_plan: "Choose A Plan"
+      free_trial_for_days: "%{days}-day Free Trial"
+      no_subscription: "No Subscription"
+      not_subscribed_to_plan: "You are not subscribed to a paid plan."
+      sign_up: "Sign up"
+      start_trial: "Start Your Free Trial"
+      subscribed: "You're Subscribed!"
+      subscribed_to_plan: "You're currently subscribed to the %{plan} plan."
+      upgrade_your_account: "Upgrade Your Account"
+      which_plan_is_best: "What Plan Is Best For You?"

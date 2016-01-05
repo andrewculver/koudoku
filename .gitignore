@@ -4,3 +4,5 @@ Gemfile.lock
 pkg/*
 *.sqlite3
 *.log
+/.idea
+*.iml
