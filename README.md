@@ -136,23 +136,19 @@ Or, if you've replaced your `application.css` with an `application.scss` (like I
 ``` 
    
 ## Using Coupons
-
-While more robust coupon support is expected in the future, the simple way to use a coupon is to first create it:
+Coupons mirror the functionality of Stripe coupons https://stripe.com/docs/api#coupons, creating a coupon subsequently adds that coupon to your Stripe account. 
 
 ```ruby
-    coupon = Coupon.create(code: '30-days-free', free_trial_length: 30)
+    coupon = Coupon.create(code: '10percentoff', duration: 'repeating', percent_off: 10)
 ```   
    
-Then assign it to a _new_ subscription before saving:
-
+And can then be assigned to a new subscription by setting a session variable.
 ```ruby
-    subscription = Subscription.new(...)
-    subscription.coupon = coupon
-    subscription.save
+    session[:koudoku_coupon_code] = '10percentoff'
 ```    
+*Note:*
+Destroying a coupon locally will delete that coupon from Stripe and Stripe doesn't support updating coupons after they've been created. 
 
-It should be noted that these coupons are different from the coupons provided natively by Stripe.
-    
 ## Implementing Logging, Notifications, etc.
 
 The included module defines the following empty "template methods" which you're able to provide an implementation for in `Subscription`:
