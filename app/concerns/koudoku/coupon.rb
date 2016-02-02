@@ -32,7 +32,7 @@ module Koudoku::Coupon
       Stripe::Coupon.create(coupon_hash)
     end
 
-    def delete_off_stripe
+    def delete_from_stripe
       Stripe::Coupon.retrieve(code).delete
     end
 
