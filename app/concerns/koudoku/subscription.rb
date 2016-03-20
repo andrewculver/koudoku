@@ -185,15 +185,15 @@ module Koudoku::Subscription
   end
 
   def changing_plans?
-    plan_id_changed? || (plan.pwyc && quantity_changed?)
+    plan_id_changed? || (plan && plan.pwyc && quantity_changed?)
   end
 
   def downgrading?
-    (plan.pwyc && quantity_was > quantity) || (plan.present? and plan_id_was.present? and plan_id_was > self.plan_id)
+    (plan && plan.pwyc && quantity_was > quantity) || (plan.present? and plan_id_was.present? and plan_id_was > self.plan_id)
   end
 
   def upgrading?
-    (plan.pwyc && quantity > quantity_was) || (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
+    (plan && plan.pwyc && quantity > quantity_was) || (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
   end
 
   # Template methods.

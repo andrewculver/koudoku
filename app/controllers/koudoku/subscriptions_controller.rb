@@ -104,7 +104,11 @@ module Koudoku
 
       else
         @subscription = ::Subscription.new
-        @subscription.quantity = params[:quantity] || 1
+
+        quantity = params[:quantity].to_i || 1
+        quantity = quantity > 0 ? quantity : 1
+
+        @subscription.quantity = quantity
         @subscription.plan = ::Plan.find(params[:plan])
       end
     end
@@ -120,6 +124,12 @@ module Koudoku
       @subscription.subscription_owner = @owner
       @subscription.coupon_code = session[:koudoku_coupon_code]
 
+      quantity = (params[:subscription].delete(:quantity) || 1).to_i
+      quantity = quantity > 0 ? quantity : 1
+
+      @subscription.assign_attributes(subscription_params)
+      @subscription.quantity = quantity
+
       if @subscription.save
         flash[:notice] = after_new_subscription_message
         redirect_to after_new_subscription_path
@@ -134,16 +144,25 @@ module Koudoku
 
     def cancel
       flash[:notice] = I18n.t('koudoku.confirmations.subscription_cancelled')
+
       @subscription.plan_id = nil
       @subscription.save
-      redirect_to owner_subscription_path(@owner, @subscription)
+      owner_id = @owner.id
+      @subscription.destroy
+      redirect_to owner_subscriptions_path(owner_id)
     end
 
     def edit
     end
 
     def update
-      if @subscription.update_attributes(subscription_params)
+      quantity = (params[:subscription].delete(:quantity) || 1).to_i
+      quantity = quantity > 0 ? quantity : 1
+
+      @subscription.assign_attributes(subscription_params)
+      @subscription.quantity = quantity
+
+      if @subscription.save
         flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
         redirect_to owner_subscription_path(@owner, @subscription)
       else

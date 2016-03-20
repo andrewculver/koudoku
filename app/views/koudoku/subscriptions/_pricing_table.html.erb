@@ -8,7 +8,7 @@
           <div class="call-to-action">
             <% if @subscription.nil? %>
               <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.subscriptions.sign_up'), koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
-            <% elsif @subscription.persisted? && !@subscription.plan.pwyc  %>
+            <% elsif @subscription.persisted? && @subscription.plan.present? && !@subscription.plan.pwyc  %>
               <% if @subscription.plan == plan && !plan.pwyc %>
                 <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.submit t('koudoku.plan_difference.selected'), class: "btn btn-large", disabled: 'disabled' %>
