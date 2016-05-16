@@ -33,6 +33,8 @@ Add the following to `app/views/layouts/application.html.erb` before your `<head
   
 After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
+**Note:** You need to create the plans in your [Stripe Dashboard](https://dashboard.stripe.com) separately. 
+
 ```ruby
     Plan.create({
       name: 'Personal',
