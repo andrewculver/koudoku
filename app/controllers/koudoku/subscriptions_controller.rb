@@ -17,13 +17,13 @@ module Koudoku
     def load_owner
       unless params[:owner_id].nil?
         if current_owner.present?
-          
+
           # we need to try and look this owner up via the find method so that we're
           # taking advantage of any override of the find method that would be provided
           # by older versions of friendly_id. (support for newer versions default behavior
           # below.)
           searched_owner = current_owner.class.find(params[:owner_id]) rescue nil
-          
+
           # if we couldn't find them that way, check whether there is a new version of
           # friendly_id in place that we can use to look them up by their slug.
           # in christoph's words, "why?!" in my words, "warum?!!!"
@@ -31,7 +31,7 @@ module Koudoku
           if searched_owner.nil? && current_owner.class.respond_to?(:friendly)
             searched_owner = current_owner.class.friendly.find(params[:owner_id]) rescue nil
           end
-          
+
           if current_owner.try(:id) == searched_owner.try(:id)
             @owner = current_owner
           else
@@ -62,7 +62,7 @@ module Koudoku
 
     def redirect_to_sign_up
       # this is a Devise default variable and thus should not change its name
-      # when we change subscription owners from :user to :company 
+      # when we change subscription owners from :user to :company
       session["user_return_to"] = new_subscription_path(plan: params[:plan])
       redirect_to new_registration_path(Koudoku.subscriptions_owned_by.to_s)
     end
@@ -76,7 +76,7 @@ module Koudoku
 
       # Load all plans.
       @plans = ::Plan.order(:display_order).all
-      
+
       # Don't prep a subscription unless a user is authenticated.
       unless no_owner?
         # we should also set the owner of the subscription here.
@@ -97,13 +97,18 @@ module Koudoku
           else
             redirect_to_sign_up
           end
-          
+
         else
           raise I18n.t('koudoku.failure.feature_depends_on_devise')
         end
 
       else
         @subscription = ::Subscription.new
+
+        quantity = params[:quantity].to_i || 1
+        quantity = quantity > 0 ? quantity : 1
+
+        @subscription.quantity = quantity
         @subscription.plan = ::Plan.find(params[:plan])
       end
     end
@@ -118,10 +123,16 @@ module Koudoku
       @subscription = ::Subscription.new(subscription_params)
       @subscription.subscription_owner = @owner
       @subscription.coupon_code = session[:koudoku_coupon_code]
-      
+
+      quantity = (params[:subscription].delete(:quantity) || 1).to_i
+      quantity = quantity > 0 ? quantity : 1
+
+      @subscription.assign_attributes(subscription_params)
+      @subscription.quantity = quantity
+
       if @subscription.save
         flash[:notice] = after_new_subscription_message
-        redirect_to after_new_subscription_path 
+        redirect_to after_new_subscription_path
       else
         flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
         render :new
@@ -133,16 +144,25 @@ module Koudoku
 
     def cancel
       flash[:notice] = I18n.t('koudoku.confirmations.subscription_cancelled')
+
       @subscription.plan_id = nil
       @subscription.save
-      redirect_to owner_subscription_path(@owner, @subscription)
+      owner_id = @owner.id
+      @subscription.destroy
+      redirect_to owner_subscriptions_path(owner_id)
     end
 
     def edit
     end
 
     def update
-      if @subscription.update_attributes(subscription_params)
+      quantity = (params[:subscription].delete(:quantity) || 1).to_i
+      quantity = quantity > 0 ? quantity : 1
+
+      @subscription.assign_attributes(subscription_params)
+      @subscription.quantity = quantity
+
+      if @subscription.save
         flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
         redirect_to owner_subscription_path(@owner, @subscription)
       else
@@ -153,25 +173,25 @@ module Koudoku
 
     private
     def subscription_params
-      
+
       # If strong_parameters is around, use that.
       if defined?(ActionController::StrongParameters)
-        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four)
+        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :quantity, :credit_card_token, :card_type, :last_four)
       else
         # Otherwise, let's hope they're using attr_accessible to protect their models!
         params[:subscription]
       end
 
     end
-    
+
     def after_new_subscription_path
       return super(@owner, @subscription) if defined?(super)
       owner_subscription_path(@owner, @subscription)
     end
-    
+
     def after_new_subscription_message
       controller = ::ApplicationController.new
-      controller.respond_to?(:new_subscription_notice_message) ? 
+      controller.respond_to?(:new_subscription_notice_message) ?
           controller.try(:new_subscription_notice_message) :
           I18n.t('koudoku.confirmations.subscription_upgraded')
     end

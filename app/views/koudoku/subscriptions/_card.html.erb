@@ -7,7 +7,7 @@
   <fieldset>
 
     <legend><%= title %></legend>
-    
+
     <div class="control-group">
       <label class="control-label"><%= t('koudoku.payment.card_number') %></label>
       <div class="controls">
@@ -33,7 +33,8 @@
 
     <div class="alert alert-error payment-errors"></div>
     <%= f.hidden_field :plan_id %>
-    
+    <%= f.hidden_field :quantity %>
+
   </fieldset>
 
   <div class="control-group">
@@ -53,7 +54,7 @@
 
   // All this code taken from Stripe's own examples at:
   // https://stripe.com/docs/tutorials/forms .
-  
+
   function stripeResponseHandler(status, response) {
 
       if (response.error) {
@@ -75,10 +76,10 @@
   $(document).ready(function() {
 
     Stripe.setPublishableKey("<%= Koudoku.stripe_publishable_key %>");
-    
+
     // By default, don't show errors.
     $(".payment-errors").hide()
-    
+
     $("#payment-form").submit(function(event) {
 
       // disable the submit button to prevent repeated clicks
@@ -95,5 +96,5 @@
       return false;
     });
   });
-  
+
 </script>

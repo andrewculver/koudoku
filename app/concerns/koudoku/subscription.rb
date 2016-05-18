@@ -34,7 +34,7 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            customer.update_subscription(:plan => self.plan.stripe_id, :quantity => self.quantity, :prorate => Koudoku.prorate)
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -79,14 +79,14 @@ module Koudoku::Subscription
                   customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
                 end
               end
-              
-              customer_attributes[:coupon] = @coupon_code if @coupon_code 
+
+              customer_attributes[:coupon] = @coupon_code if @coupon_code
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              customer.update_subscription(:plan => self.plan.stripe_id, :quantity => self.quantity, :prorate => Koudoku.prorate)
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
@@ -185,15 +185,15 @@ module Koudoku::Subscription
   end
 
   def changing_plans?
-    plan_id_changed?
+    plan_id_changed? || (plan && plan.pwyc && quantity_changed?)
   end
 
   def downgrading?
-    plan.present? and plan_id_was.present? and plan_id_was > self.plan_id
+    (plan && plan.pwyc && quantity_was > quantity) || (plan.present? and plan_id_was.present? and plan_id_was > self.plan_id)
   end
 
   def upgrading?
-    (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
+    (plan && plan.pwyc && quantity > quantity_was) || (plan_id_was.present? and plan_id_was < plan_id) or plan_id_was.nil?
   end
 
   # Template methods.

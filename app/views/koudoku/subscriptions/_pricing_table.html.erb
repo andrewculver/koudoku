@@ -4,12 +4,12 @@
       <div class="thumbnail">
         <div class="caption">
           <h3><%= plan.name %></h3>
-          <h4><%= plan_price(plan) %></h4>
+          <h4><%= plan_price(plan, @subscription) %></h4>
           <div class="call-to-action">
             <% if @subscription.nil? %>
               <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.subscriptions.sign_up'), koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
-            <% elsif @subscription.persisted? %>
-              <% if @subscription.plan == plan %>
+            <% elsif @subscription.persisted? && @subscription.plan.present? && !@subscription.plan.pwyc  %>
+              <% if @subscription.plan == plan && !plan.pwyc %>
                 <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.submit t('koudoku.plan_difference.selected'), class: "btn btn-large", disabled: 'disabled' %>
                 <% end %>
@@ -20,7 +20,29 @@
                 <% end %>
               <% end %>
             <% else %>
-              <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.plan_difference.upgrade'), new_owner_subscription_path(@owner, plan: plan.id), class: "btn btn-success btn-large" %>
+                <% if @subscription.persisted? %>
+                  <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
+                    <% if plan.pwyc %>
+                      $<%= f.number_field :quantity, value: (@subscription.quantity || 1) %>/<%= plan_interval(plan) %>
+                      <br />
+                    <% end %>
+                    <%= f.hidden_field :plan_id, value: plan.id %>
+                    <button class="btn btn-success btn-large">
+                      <%= Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.plan_difference.upgrade') %>
+                    </button>
+                  <% end %>
+                <% else %>
+                  <%= form_for @subscription, url: new_owner_subscription_path(@owner), method: "GET" do |f| %>
+                    <% if plan.pwyc %>
+                      $<%= number_field_tag :quantity, 1 %>/<%= plan_interval(plan) %>
+                      <br />
+                    <% end %>
+                    <%= hidden_field_tag :plan, plan.id %>
+                    <button class="btn btn-success btn-large">
+                      <%= Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.plan_difference.upgrade') %>
+                    </button>
+                  <% end %>
+                <% end %>
             <% end %>
           </div>
           <ul class="features">
