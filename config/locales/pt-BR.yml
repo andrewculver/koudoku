@@ -1,0 +1,57 @@
+# Translation by Lauro Becker (http://www.organicadigital.com)
+
+pt-BR:
+  koudoku:
+    confirmations:
+      feature_depends_on_devise: "Esta funcionalidade necessita do Devise para autenticação."
+      subscription_cancelled: "Você cancelou sua subscrição com sucesso."
+      subscription_updated: "Você atualizou sua subscrição com sucesso."
+      subscription_upgraded: "Upgrade feito com sucesso."
+    failure:
+      problem_processing_transaction: "Ocorreu um problema processando a transação."
+      unauthorized: "Não autorizado"
+    plan_intervals:
+      month: "mês"
+      year: "ano"
+      week: "semana"
+      6month: "6 meses"
+      3month: "3 meses"
+    plan_difference:
+      downgrade: "Diminuir"
+      selected: "Selecionado"
+      start_trial: "Iniciar teste"
+      upgrade: "Upgrade"
+    payment:
+      cancel: "Cancelar"
+      card_number: "Número do Cartão"
+      card_on_file_with_last_four: "O cartão de sua conta termina com %{last_four}."
+      cvc: "CVC"
+      expiration: "Expiração (MM/YYYY)"
+      payment_information: "Informações de Pagamento"
+      save_billing_info: "Salvar Informações de Cobrança"
+      upgrade_account: "Upgrade de Sua Conta"
+      update_payment_information: "Atualizar suas Informações de Pagamento"
+    social_proof:
+      testimonial1:
+        person: "Person at Place"
+        quote: "\"Some Great Quote\""
+      testimonial2:
+        person: "Person at Place"
+        quote: "\"This is a great service and you've been the best ever! Thanks!\""
+      testimonial3:
+        person: "Person at Place"
+        quote: "\"I love you guys and you're the best! You're the best!\""
+    subscriptions:
+      cancel_your_subscription: "cancelar sua subscrição"
+      cancel_your_subscription_note_html: "Você também pode %{link}."
+      choose_other_plan: "Escolher Outro Plano"
+      choose_plan: "Escolha Um Plano"
+      free_trial_for_days: "%{days} dias de teste"
+      no_subscription: "Nenhuma Subscrição"
+      not_subscribed_to_plan: "Você não está subscrito em um plano pago."
+      sign_up: "Cadastrar-se"
+      start_trial: "Iniciar seu período de testes"
+      subscribed: "Você está subscrito!"
+      subscribed_to_plan: "Você está atualmente subscrito ao plano %{plan}."
+      upgrade_your_account: "Upgrade de Sua Conta"
+      which_plan_is_best: "Qual é o melhor plano para você?"
