@@ -9,36 +9,44 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130520163946) do
+ActiveRecord::Schema.define(version: 20130520163946) do
 
-  create_table "coupons", :force => true do |t|
+  create_table "coupons", force: true do |t|
     t.string   "code"
     t.string   "free_trial_length"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.integer  "coupons"
+    t.integer  "interval"
+    t.float    "amount_off"
+    t.integer  "percentage_off"
+    t.datetime "redeem_by"
+    t.integer  "max_redemptions"
+    t.string   "duration"
+    t.integer  "duration_in_months"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "customers", :force => true do |t|
+  create_table "customers", force: true do |t|
     t.string   "email"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "plans", :force => true do |t|
+  create_table "plans", force: true do |t|
     t.string   "name"
     t.string   "stripe_id"
     t.float    "price"
     t.text     "features"
     t.boolean  "highlight"
     t.integer  "display_order"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "interval"
   end
 
-  create_table "subscriptions", :force => true do |t|
+  create_table "subscriptions", force: true do |t|
     t.string   "stripe_id"
     t.integer  "plan_id"
     t.string   "last_four"
@@ -46,8 +54,8 @@ ActiveRecord::Schema.define(:version => 20130520163946) do
     t.string   "card_type"
     t.float    "current_price"
     t.integer  "customer_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

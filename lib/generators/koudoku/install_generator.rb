@@ -43,7 +43,7 @@ module Koudoku
       template "app/models/plan.rb"
 
       # Add coupons.
-      generate("model coupon code:string free_trial_length:string")
+      generate("model coupon code:string interval:integer amount_off:float percent_off:integer redeem_by:datetime max_redemptions:integer duration:string duration_in_months:integer")
       template "app/models/coupon.rb"
 
       # Update the owner relationship.
