@@ -3,7 +3,7 @@ Koudoku.setup do |config|
   config.stripe_publishable_key = ENV['STRIPE_PUBLISHABLE_KEY']
   config.stripe_secret_key = ENV['STRIPE_SECRET_KEY']
   
-  Stripe.api_version = '2015-01-11' #Making sure the API version used is compatible.
+  Stripe.api_version = '2015-04-07' #Making sure the API version used is compatible.
   # config.prorate = false # Default is true, set to false to disable prorating subscriptions
   # config.free_trial_length = 30
 
