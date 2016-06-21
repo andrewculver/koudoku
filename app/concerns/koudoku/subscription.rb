@@ -89,7 +89,9 @@ module Koudoku::Subscription
               finalize_new_customer!(customer.id, plan.price)
               customer.update_subscription(plan: plan.stripe_id,
                                            quantity: quantity,
-                                           prorate: Koudoku.prorate)
+                                           prorate: Koudoku.prorate,
+                                           metadata: metadata,
+              )
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
