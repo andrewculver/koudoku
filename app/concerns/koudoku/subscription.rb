@@ -11,8 +11,10 @@ module Koudoku::Subscription
     # update details.
     before_save :processing!
     def processing!
+      Rails.logger.debug('Koudoku::Subscription - beginning processing')
       # if their package level has changed ..
       if changing_plans?
+        Rails.logger.debug('Koudoku::Subscription - changing plans')
 
         prepare_for_plan_change
 
@@ -32,6 +34,8 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
+            Rails.logger.debug('Koudoku::Subscription - updating existing subscription')
+
             customer.update_subscription(plan: plan.stripe_id,
                                          quantity: quantity,
                                          prorate: Koudoku.prorate)
@@ -56,6 +60,8 @@ module Koudoku::Subscription
 
           # when customer DOES NOT exist in stripe ..
         else
+          Rails.logger.debug('Koudoku::Subscription - creating new customer')
+
           # if a new plan has been selected
           if plan.present?
 
@@ -87,6 +93,7 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
+              Rails.logger.debug('Koudoku::Subscription - creating new subscription')
               customer.update_subscription(plan: plan.stripe_id,
                                            quantity: quantity,
                                            prorate: Koudoku.prorate,
@@ -153,6 +160,7 @@ module Koudoku::Subscription
         finalize_card_update!
 
       end
+      Rails.logger.debug('Koudoku::Subscription - end processing')
     end
   end
 
