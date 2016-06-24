@@ -98,9 +98,10 @@ module Koudoku::Subscription
                                            quantity: quantity,
                                            prorate: Koudoku.prorate,
                                            metadata: metadata,
-              )
+                                           trial_end: Figaro.env.add_testing_trial_time == 'true' ? Time.zone.now.advance(seconds: 5).to_i : :now), # this is only for testing failed subscriptions
 
             rescue Stripe::CardError => card_error
+              Rails.logger.info("Credit card failed: #{card_error}")
               errors[:base] << card_error.message
               card_was_declined
               return false
@@ -129,7 +130,7 @@ module Koudoku::Subscription
         finalize_plan_change!
 
         # if they're changing their quantity
-      elsif quantity_changed?
+      elsif column_changed?(:quantity)
 
         if stripe_id.present? && plan.present?
 
