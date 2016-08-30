@@ -21,7 +21,8 @@ StripeEvent.configure do |events|
   
   events.subscribe 'customer.subscription.deleted' do |event|
     stripe_id = event.data.object['customer']
-    subscription = ::Subscription.find_by_stripe_id(stripe_id)
-    subscription.subscription_owner.try(:cancel)
+    if subscription = ::Subscription.find_by_stripe_id(stripe_id)
+      subscription.subscription_owner.try(:cancel)
+    end
   end
 end
