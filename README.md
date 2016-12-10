@@ -14,7 +14,7 @@ Include the following in your `Gemfile`:
 
 ```ruby
     gem 'koudoku'
-```    
+```
 
 After running `bundle install`, you can run a Rails generator to do the rest. Before installing, the model you'd like to have own subscriptions must already exist. (In many cases this will be `user`. It may also be something like `company`, etc.)
 
@@ -22,15 +22,15 @@ After running `bundle install`, you can run a Rails generator to do the rest. Be
     rails g koudoku:install user
     rake db:migrate
 ```
-    
+
 Add the following to `app/views/layouts/application.html.erb` before your `<head>` tag closes:
 
 ```ruby
     <%= yield :koudoku %>
 ```
-    
+
 (This allows us to inject a Stripe `<script>` tag in the correct place. If you don't, the payment form will not work.)
-  
+
 After installing, you'll need to add some subscription plans. (You can see an explanation of each of the attributes in the table below.)
 
 **Note:** You need to create the plans in your [Stripe Dashboard](https://dashboard.stripe.com) separately. 
@@ -54,19 +54,19 @@ After installing, you'll need to add some subscription plans. (You can see an ex
       features: ['3 Projects', '3 Pages', '3 Users', '3 Organizations'].join("\n\n"),
       display_order: 2
     })
-    
+
     Plan.create({
       name: 'Enterprise',
-      price: 100.00, 
+      price: 100.00,
       interval: 'month',
-      stripe_id: '3', 
-      features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"), 
+      stripe_id: '3',
+      features: ['10 Projects', '10 Pages', '10 Users', '10 Organizations'].join("\n\n"),
       display_order: 3
     })
-```    
+```
 
 To help you understand the attributes:
-    
+
 | Attribute       | Type    | Function |
 | --------------- | ------- | -------- |
 | `name`          | string  | Name for the plan to be presented to customers. |
@@ -78,7 +78,7 @@ To help you understand the attributes:
 | `highlight`     | boolean | *Optional.* Whether to highlight the plan on the pricing page. |
 
 The only view installed locally into your app by default is the `koudoku/subscriptions/_social_proof.html.erb` partial which is displayed alongside the pricing table. It's designed as a placeholder where you can provide quotes about your product from customers that could positively influence your visitors.
-    
+
 ### Configuring Stripe API Keys
 
 You can supply your publishable and secret API keys in `config/initializers/koudoku.rb`. However, by default it will use the `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` shell environment variables. This encourages people to keep these API keys out of version control. You may want to rename these environment variables to be more application specific.
@@ -89,15 +89,15 @@ In a bash shell, you can set them in `~/.bash_profile` like so:
     export STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
     export STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
 ```
-    
+
 (Reload your terminal for these settings to take effect.)
-    
+
 On Heroku you accomplish this same effect with [Config Vars](https://devcenter.heroku.com/articles/config-vars):
 
 ```bash
     heroku config:add STRIPE_PUBLISHABLE_KEY=pk_0CJwDH9sdh98f79FDHDOjdiOxQob0
     heroku config:add STRIPE_SECRET_KEY=sk_0CJwFDIUshdfh97JDJOjZ5OIDjOCH
-```    
+```
 
 ## User-Facing Subscription Management
 
@@ -105,8 +105,8 @@ By default a `pricing_path` route is defined which you can link to in order to s
 
 ```ruby
     <%= link_to 'Pricing', main_app.pricing_path %>
-```   
-   
+```
+
 (Note: Koudoku uses the application layout, so it's important that application paths referenced in that layout are prefixed with "`main_app.`" like you see above or Rails will try to look the paths up in the Koudoku engine instead of your application.)
 
 Existing users can view available plans, select a plan, enter credit card details, review their subscription, change plans, and cancel at the following route:
@@ -116,6 +116,8 @@ Existing users can view available plans, select a plan, enter credit card detail
 ```
 
 In these paths, `owner` refers to `User` by default, or whatever model has been configured to be the owner of the `Subscription` model.
+
+### Overriding Views
 
 A number of views are provided by default. To customize the views, use the following generator:
 
@@ -129,32 +131,32 @@ Koudoku ships with a stock pricing table. By default it depends on Twitter Boots
 
 ```css
     *= require 'koudoku/pricing-table'
-```  
-  
+```
+
 Or, if you've replaced your `application.css` with an `application.scss` (like I always do):
 
 ```css
     @import "koudoku/pricing-table"
-``` 
-   
+```
+
 ## Using Coupons
 
 While more robust coupon support is expected in the future, the simple way to use a coupon is to first create it:
 
 ```ruby
     coupon = Coupon.create(code: '30-days-free', free_trial_length: 30)
-```   
-   
+```
+
 Then assign it to a _new_ subscription before saving:
 
 ```ruby
     subscription = Subscription.new(...)
     subscription.coupon = coupon
     subscription.save
-```    
+```
 
 It should be noted that these coupons are different from the coupons provided natively by Stripe.
-    
+
 ## Implementing Logging, Notifications, etc.
 
 The included module defines the following empty "template methods" which you're able to provide an implementation for in `Subscription`:
@@ -172,7 +174,7 @@ The included module defines the following empty "template methods" which you're 
  - `finalize_cancelation!`
  - `finalize_card_update!`
  - `card_was_declined`
- 
+
 Be sure to include a call to `super` in each of your implementations, especially if you're using multiple concerns to break all this logic into smaller pieces.
 
 Between `prepare_for_*` and `finalize_*`, so far I've used `finalize_*` almost exclusively. The difference is that `prepare_for_*` runs before we settle things with Stripe, and `finalize_*` runs after everything is settled in Stripe. For that reason, please be sure not to implement anything in `finalize_*` implementations that might cause issues with ActiveRecord saving the updated state of the subscription.
@@ -182,7 +184,7 @@ Between `prepare_for_*` and `finalize_*`, so far I've used `finalize_*` almost e
 We use [stripe_event](https://github.com/integrallis/stripe_event) under the hood to support webhooks.
 The default webhooks URL is `/koudoku/webhooks`.
 
-You can add your own webhooks using the (reduced) stripe_event syntax in the `config/initializers/koudoku.rb` file: 
+You can add your own webhooks using the (reduced) stripe_event syntax in the `config/initializers/koudoku.rb` file:
 
 ```
 # /config/initializers/koudoku.rb
@@ -190,9 +192,9 @@ Koudoku.setup do |config|
   config.subscriptions_owned_by = :user
   config.stripe_publishable_key = ENV['STRIPE_PUBLISHABLE_KEY']
   config.stripe_secret_key = ENV['STRIPE_SECRET_KEY']
-  
+
   # add webhooks
   config.subscribe 'charge.failed', YourChargeFailed
 end
 
-``` 
+```
