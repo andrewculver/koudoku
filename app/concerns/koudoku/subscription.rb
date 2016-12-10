@@ -34,8 +34,12 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
-
+            if sub = customer.subscriptions.first
+              sub.prorate = Koudoku.prorate
+              sub.plan = self.plan.stripe_id
+              sub.tax_percent = subscription_owner.tax_percent(customer) if subscription_owner.respond_to?(:tax_percent)
+              sub.save
+            end
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
 
@@ -48,7 +52,9 @@ module Koudoku::Subscription
             self.current_price = nil
 
             # delete the subscription.
-            customer.cancel_subscription
+            if sub = customer.subscriptions.first
+              sub.delete
+            end
 
             finalize_cancelation!
 
@@ -70,7 +76,7 @@ module Koudoku::Subscription
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
+                source: credit_card_token # obtained with Stripe.js
               }
 
               # If the class we're being included in supports coupons ..
@@ -86,7 +92,11 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              customer.subscriptions.create({plan: self.plan.stripe_id,
+                                            prorate: Koudoku.prorate}.merge(
+                                              subscription_owner.respond_to?(:tax_percent) ?
+                                              { tax_percent: subscription_owner.tax_percent(customer) } : {}
+                                            ))
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
@@ -96,7 +106,7 @@ module Koudoku::Subscription
 
             # store the customer id.
             self.stripe_id = customer.id
-            self.last_four = customer.cards.retrieve(customer.default_card).last4
+            self.last_four = customer.sources.retrieve(customer.default_source).last4
 
             finalize_new_subscription!
             finalize_upgrade!
@@ -123,11 +133,11 @@ module Koudoku::Subscription
 
         # fetch the customer.
         customer = Stripe::Customer.retrieve(self.stripe_id)
-        customer.card = self.credit_card_token
+        customer.source = self.credit_card_token
         customer.save
 
         # update the last four based on this new card.
-        self.last_four = customer.cards.retrieve(customer.default_card).last4
+        self.last_four = customer.sources.retrieve(customer.default_source).last4
         finalize_card_update!
 
       end
