@@ -54,7 +54,8 @@ module Koudoku
       copy_file "app/views/koudoku/subscriptions/_social_proof.html.erb"
 
       # Enable Koudoku helpers
-      inject_into_class "app/helpers/application_helper.rb", "include Koudoku::ApplicationHelper"
+      inject_into_class "app/helpers/application_helper.rb", ApplicationHelper,
+                        "include Koudoku::ApplicationHelper\n\n"
 
       # Add webhooks to the route.
 
