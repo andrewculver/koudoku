@@ -55,7 +55,7 @@ module Koudoku
 
       # Enable Koudoku helpers
       inject_into_class "app/helpers/application_helper.rb", ApplicationHelper,
-                        "include Koudoku::ApplicationHelper\n\n"
+                        "# Added by Koudoku.\n include Koudoku::ApplicationHelper\n\n"
 
       # Add webhooks to the route.
 
