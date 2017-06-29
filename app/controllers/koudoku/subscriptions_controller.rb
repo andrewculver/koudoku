@@ -1,9 +1,9 @@
 module Koudoku
   class SubscriptionsController < ApplicationController
-    before_filter :load_owner
-    before_filter :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
-    before_filter :load_subscription, only: [:show, :cancel, :edit, :update]
-    before_filter :load_plans, only: [:index, :edit]
+    before_action :load_owner
+    before_action :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
+    before_action :load_subscription, only: [:show, :cancel, :edit, :update]
+    before_action :load_plans, only: [:index, :edit]
 
     def load_plans
       @plans = ::Plan.order(:display_order)
