@@ -7,7 +7,7 @@ module Koudoku::Subscription
     # client-side after storing the credit card information.
     attr_accessor :credit_card_token
 
-    belongs_to :plan
+    belongs_to :plan, optional: true
 
     # update details.
     before_save :processing!
@@ -66,7 +66,7 @@ module Koudoku::Subscription
             prepare_for_upgrade
 
             begin
-              raise Koudoku::NilCardToken, "Possible javascript error" if credit_card_token.empty?
+              raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
@@ -133,8 +133,8 @@ module Koudoku::Subscription
       end
     end
   end
-  
-  
+
+
   def describe_difference(plan_to_describe)
     if plan.nil?
       if persisted?
