@@ -51,6 +51,12 @@ module Koudoku
     def load_subscription
       ownership_attribute = :"#{Koudoku.subscriptions_owned_by}_id"
       @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
+
+      # also, if cancan methods are available, we should use that to authorize.
+      if defined?(:can?)
+        return unauthorized unless can? :manage, @subscription
+      end
+
       return @subscription.present? ? @subscription : unauthorized
     end
 
