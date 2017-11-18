@@ -6,3 +6,4 @@ pkg/*
 *.log
 /.idea
 *.iml
+.DS_Store
