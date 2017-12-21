@@ -67,11 +67,12 @@ module Koudoku::Subscription
 
             begin
               raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
+
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
                 card: credit_card_token # obtained with Stripe.js
-              }
+              }.merge(try(:custom_stripe_attributes) || {})
 
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
