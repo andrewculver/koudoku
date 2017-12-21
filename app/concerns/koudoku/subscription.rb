@@ -72,7 +72,7 @@ module Koudoku::Subscription
                 description: subscription_owner_description,
                 email: subscription_owner_email,
                 card: credit_card_token # obtained with Stripe.js
-              }.merge(try(:custom_stripe_attributes) || {})
+              }
 
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
@@ -177,11 +177,11 @@ module Koudoku::Subscription
   def subscription_owner_description
     # assuming owner responds to name.
     # we should check for whether it responds to this or not.
-    "#{subscription_owner.try(:name) || subscription_owner.try(:id)}"
+    "#{subscription_owner.try(:billing_name) || subscription_owner.try(:name) || subscription_owner.try(:id)}"
   end
 
   def subscription_owner_email
-    "#{subscription_owner.try(:email)}"
+    "#{subscription_owner.try(:formatted_email_address) || subscription_owner.try(:email)}"
   end
 
   def changing_plans?
