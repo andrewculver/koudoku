@@ -10,6 +10,7 @@ en:
       subscription_upgraded: "You've been successfully upgraded."
     failure:
       problem_processing_transaction: "There was a problem processing this transaction."
+      plan_change_needs_updated_card: "Our payment provider returned the following message: \"%{error}\" Please update your payment information before trying to change plans."
       unauthorized: "Unauthorized"
     plan_intervals:
       month: "month"
