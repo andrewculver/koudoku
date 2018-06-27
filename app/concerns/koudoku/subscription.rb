@@ -34,8 +34,12 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            Stripe::Customer.update(self.stripe_id, { business_vat_id: self.team.tax_number })
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.vat_tax_percent)
+            if self.team.tax_number.present? && self.team.tax_percent.present?
+              Stripe::Customer.update(self.stripe_id, { business_vat_id: self.team.tax_number })
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.tax_percent)
+            else
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            end
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -88,7 +92,12 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.vat_tax_percent)
+
+              if self.team.tax_percent.present?
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.vat_tax_percent)
+              else
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              end
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
