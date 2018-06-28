@@ -73,7 +73,7 @@ module Koudoku::Subscription
             begin
               raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
               customer_attributes = {
-                business_vat_id: self.team.tax_number,
+                business_vat_id: "#{self.team.country_code}#{self.team.tax_number}",
                 description: subscription_owner_description,
                 email: subscription_owner_email,
                 card: credit_card_token # obtained with Stripe.js
