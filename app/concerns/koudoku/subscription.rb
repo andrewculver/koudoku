@@ -35,7 +35,7 @@ module Koudoku::Subscription
 
             # update the package level with stripe.
             if self.team.tax_number.present? && self.team.tax_percent.present?
-              Stripe::Customer.update(self.stripe_id, { business_vat_id: self.team.tax_number })
+              Stripe::Customer.update(self.stripe_id, { business_vat_id: "#{self.team.country_code}#{self.team.tax_number}" })
               customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.tax_percent)
             else
               customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
