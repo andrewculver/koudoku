@@ -94,7 +94,7 @@ module Koudoku::Subscription
               finalize_new_customer!(customer.id, plan.price)
 
               if self.team.tax_percent.present?
-                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.vat_tax_percent)
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.tax_percent)
               else
                 customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
               end
