@@ -133,7 +133,11 @@ module Koudoku
         flash[:notice] = after_new_subscription_message
         redirect_to after_new_subscription_path
       else
-        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+
+        ## commenting this out because the model callbacks are actually
+        ## providing the error message we need here from stripe.
+        # flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+
         render :new
       end
     end

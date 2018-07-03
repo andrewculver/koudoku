@@ -92,7 +92,7 @@ module Koudoku::Subscription
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
               card_was_declined
-              return false
+              throw :abort
             end
 
             # store the customer id.
