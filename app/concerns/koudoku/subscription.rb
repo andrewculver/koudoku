@@ -34,7 +34,12 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            if self.team.tax_number.present? && self.team.tax_percent.present?
+              Stripe::Customer.update(self.stripe_id, { business_vat_id: "#{self.team.country_code}#{self.team.tax_number}" })
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.tax_percent)
+            else
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            end
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -69,6 +74,7 @@ module Koudoku::Subscription
               raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
 
               customer_attributes = {
+                business_vat_id: "#{self.team.country_code}#{self.team.tax_number}",
                 description: subscription_owner_description,
                 email: subscription_owner_email,
                 card: credit_card_token # obtained with Stripe.js
@@ -87,7 +93,12 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+
+              if self.team.tax_percent.present?
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :tax_percent => self.team.tax_percent)
+              else
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              end
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
