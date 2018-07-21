@@ -78,7 +78,7 @@ module Koudoku::Subscription
               # If the class we're being included in supports Link Mink ..
               if respond_to? :link_mink_id
                 if link_mink_id.present?
-                  customer_attributes[:customer_attributes][:identifier] = link_mink_id
+                  customer_attributes[:metadata][:identifier] = link_mink_id
                 end
               end
 
