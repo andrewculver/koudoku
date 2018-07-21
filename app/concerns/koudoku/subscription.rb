@@ -71,7 +71,8 @@ module Koudoku::Subscription
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
+                card: credit_card_token, # obtained with Stripe.js
+                metadata: subscription_owner_metadata
               }
 
               # If the class we're being included in supports coupons ..
@@ -182,6 +183,10 @@ module Koudoku::Subscription
 
   def subscription_owner_email
     "#{subscription_owner.try(:formatted_email_address) || subscription_owner.try(:email)}"
+  end
+
+  def subscription_owner_metadata
+    subscription_owner.try(:stripe_metadata)
   end
 
   def changing_plans?
