@@ -90,9 +90,13 @@ module Koudoku::Subscription
               finalize_new_customer!(customer.id, plan.price)
 
               subscription_attributes = {
-                plan: self.plan.stripe_id,
-                prorate: Koudoku.prorate,
-                quantity: subscription_owner_quantity,
+                customer: customer.id,
+                items:[
+                  {
+                    plan: self.plan.stripe_id,
+                    quantity: subscription_owner_quantity
+                  }
+                ]
               }
 
               # If the class we're being included in supports Link Mink ..
@@ -102,7 +106,7 @@ module Koudoku::Subscription
                 end
               end
 
-              customer.update_subscription(subscription_attributes)
+              Stripe::Subscription.create(subscription_attributes)
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
