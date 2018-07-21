@@ -125,7 +125,10 @@ module Koudoku
 
     def create
 
-      @subscription = ::Subscription.new(subscription_params)
+      all_subscription_params = subscription_params.to_hash
+      all_subscription_params[:rewardful_id] = params[:referral] if params[:referral]
+
+      @subscription = ::Subscription.new(all_subscription_params)
       @subscription.subscription_owner = @owner
       @subscription.coupon_code = session[:koudoku_coupon_code]
 

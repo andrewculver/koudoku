@@ -75,6 +75,13 @@ module Koudoku::Subscription
                 metadata: subscription_owner_metadata
               }
 
+              # If the class we're being included in supports Rewardful ..
+              if respond_to? :rewardful_id
+                if rewardful_id.present?
+                  customer_attributes[:metadata] = {referral: rewardful_id}
+                end
+              end
+
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
                 if coupon.present? and coupon.free_trial?
