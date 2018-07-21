@@ -75,6 +75,13 @@ module Koudoku::Subscription
                 metadata: subscription_owner_metadata
               }
 
+              # If the class we're being included in supports Link Mink ..
+              if respond_to? :link_mink_id
+                if link_mink_id.present?
+                  customer_attributes[:customer_attributes][:identifier] = link_mink_id
+                end
+              end
+
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
                 if coupon.present? and coupon.free_trial?
@@ -88,7 +95,11 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              customer.update_subscription({
+                plan: self.plan.stripe_id,
+                prorate: Koudoku.prorate,
+                quantity: subscription_owner_quantity,
+              })
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
@@ -186,7 +197,11 @@ module Koudoku::Subscription
   end
 
   def subscription_owner_metadata
-    subscription_owner.try(:stripe_metadata)
+    subscription_owner.try(:stripe_metadata) || {}
+  end
+
+  def subscription_owner_quantity
+    subscription_owner.try(:subscription_quantity) || 1
   end
 
   def changing_plans?
