@@ -129,6 +129,10 @@ module Koudoku::Subscription
               self.stripe_subscription_id = subscription.id
             end
 
+            if subscription_owner.respond_to? :stripe_id
+              subscription_owner.update(stripe_id: customer.id)
+            end
+
             finalize_new_subscription!
             finalize_upgrade!
 
