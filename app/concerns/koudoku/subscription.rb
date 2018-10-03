@@ -103,7 +103,8 @@ module Koudoku::Subscription
                     plan: self.plan.stripe_id,
                     quantity: subscription_owner_quantity
                   }
-                ]
+                ],
+                trial_from_plan: true
               }
 
               # If the class we're being included in supports Link Mink ..
