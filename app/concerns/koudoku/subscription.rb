@@ -114,7 +114,7 @@ module Koudoku::Subscription
                 end
               end
 
-              Stripe::Subscription.create(subscription_attributes)
+              subscription = Stripe::Subscription.create(subscription_attributes)
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
@@ -125,6 +125,14 @@ module Koudoku::Subscription
             # store the customer id.
             self.stripe_id = customer.id
             self.last_four = customer.sources.retrieve(customer.default_source).last4
+
+            if respond_to? :stripe_subscription_id
+              self.stripe_subscription_id = subscription.id
+            end
+
+            if subscription_owner.respond_to? :stripe_id
+              subscription_owner.update(stripe_id: customer.id)
+            end
 
             finalize_new_subscription!
             finalize_upgrade!
