@@ -6,6 +6,7 @@ en:
     confirmations:
       feature_depends_on_devise: "This feature depends on Devise for authentication."
       subscription_cancelled: "You've successfully cancelled your subscription."
+      subscription_uncancelled: "You've successfully uncancelled your subscription."
       subscription_updated: "You've successfully updated your subscription."
       subscription_upgraded: "You've been successfully upgraded."
     failure:
@@ -23,6 +24,7 @@ en:
       selected: "Selected"
       start_trial: "Start Trial"
       upgrade: "Upgrade"
+      uncancel: "Uncancel"
     payment:
       cancel: "Cancel"
       card_number: "Card Number"

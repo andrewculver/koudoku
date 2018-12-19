@@ -34,7 +34,13 @@ module Koudoku::Subscription
             prepare_for_upgrade if upgrading?
 
             # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            customer.update_subscription(
+              plan: self.plan.stripe_id,
+              prorate: Koudoku.prorate,
+              cancel_at_period_end: false
+            )
+
+            self.cancel_at = nil
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -42,15 +48,39 @@ module Koudoku::Subscription
           # if no plan has been selected.
           else
 
-            prepare_for_cancelation
+            if Koudoku.cancel_at_period_end
 
-            # Remove the current pricing.
-            self.current_price = nil
+              # since the old koudoku method for canceling a subscription was unsetting the plan, we need to
+              # look up the old plan manually.
+              plan_was = Plan.find(self.plan_id_was)
 
-            # delete the subscription.
-            customer.cancel_subscription
+              result = customer.update_subscription(
+                # we're not actually changing the plan, but stripe requires this param for some reason.
+                plan: plan_was.stripe_id,
+                cancel_at_period_end: true
+              )
 
-            finalize_cancelation!
+              # we're adhering to the original koudoku interface of canceling a subscription by unsetting the plan.
+              # however, we actually don't want to unset the plan yet, because the customer technically still has a
+              # plan until the end of the billing period.
+              self.plan = plan_was
+
+              # keep track of when stripe says the plan should actually be removed from the subscription.
+              self.cancel_at = Time.at(result['current_period_end'])
+
+            else
+
+              prepare_for_cancelation
+
+              # Remove the current pricing.
+              self.current_price = nil
+
+              # delete the subscription.
+              customer.cancel_subscription
+
+              finalize_cancelation!
+
+            end
 
           end
 

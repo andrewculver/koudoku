@@ -2,7 +2,7 @@ module Koudoku
   class SubscriptionsController < ApplicationController
     before_action :load_owner
     before_action :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
-    before_action :load_subscription, only: [:show, :cancel, :edit, :update]
+    before_action :load_subscription, only: [:show, :cancel, :uncancel, :edit, :update]
     before_action :load_plans, only: [:index, :edit]
 
     def load_plans
@@ -155,6 +155,13 @@ module Koudoku
       redirect_to owner_subscription_path(@owner, @subscription)
     end
 
+    def uncancel
+      flash[:notice] = I18n.t('koudoku.confirmations.subscription_uncancelled')
+      @subscription.cancel_at = nil
+      @subscription.save
+      redirect_to owner_subscription_path(@owner, @subscription)
+    end
+
     def edit
     end
 
@@ -178,7 +185,7 @@ module Koudoku
 
       # If strong_parameters is around, use that.
       if defined?(ActionController::StrongParameters)
-        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four, :link_mink_id)
+        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four, :link_mink_id, :uncancel)
       else
         # Otherwise, let's hope they're using attr_accessible to protect their models!
         params[:subscription]
