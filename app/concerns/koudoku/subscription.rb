@@ -56,62 +56,7 @@ module Koudoku::Subscription
 
         # when customer DOES NOT exist in stripe ..
         else
-          # if a new plan has been selected
-          if self.plan.present?
-
-            # Record the new plan pricing.
-            self.current_price = self.plan.price
-
-            prepare_for_new_subscription
-            prepare_for_upgrade
-
-            begin
-              raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
-              customer_attributes = {
-                description: subscription_owner_description,
-                email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
-              }
-
-              # If the class we're being included in supports coupons ..
-              if respond_to? :coupon
-                if coupon.present? and coupon.free_trial?
-                  customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
-                end
-              end
-
-              customer_attributes[:coupon] = @coupon_code if @coupon_code
-
-              # create a customer at that package level.
-              customer = Stripe::Customer.create(customer_attributes)
-
-              finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
-
-            rescue Stripe::CardError => card_error
-              errors[:base] << card_error.message
-              card_was_declined
-              return false
-            end
-
-            # store the customer id.
-            self.stripe_id = customer.id
-            self.last_four = customer.sources.retrieve(customer.default_source).last4
-
-            finalize_new_subscription!
-            finalize_upgrade!
-
-          else
-
-            # This should never happen.
-
-            self.plan_id = nil
-
-            # Remove any plan pricing.
-            self.current_price = nil
-
-          end
-
+          
         end
 
         finalize_plan_change!
@@ -132,6 +77,65 @@ module Koudoku::Subscription
 
       end
     end
+  end
+  
+  def create_new_stripe_customer
+    # if a new plan has been selected
+    if self.plan.present?
+
+      # Record the new plan pricing.
+      self.current_price = self.plan.price
+
+      prepare_for_new_subscription
+      prepare_for_upgrade
+
+      begin
+        raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
+        customer_attributes = {
+          description: subscription_owner_description,
+          email: subscription_owner_email,
+          card: credit_card_token # obtained with Stripe.js
+        }
+
+        # If the class we're being included in supports coupons ..
+        if respond_to? :coupon
+          if coupon.present? and coupon.free_trial?
+            customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
+          end
+        end
+
+        customer_attributes[:coupon] = @coupon_code if @coupon_code
+
+        # create a customer at that package level.
+        customer = Stripe::Customer.create(customer_attributes)
+
+        finalize_new_customer!(customer.id, plan.price)
+        customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+
+      rescue Stripe::CardError => card_error
+        errors[:base] << card_error.message
+        card_was_declined
+        return false
+      end
+
+      # store the customer id.
+      self.stripe_id = customer.id
+      self.last_four = customer.sources.retrieve(customer.default_source).last4
+
+      finalize_new_subscription!
+      finalize_upgrade!
+
+    else
+
+      # This should never happen.
+
+      self.plan_id = nil
+
+      # Remove any plan pricing.
+      self.current_price = nil
+
+    end
+
   end
 
 
