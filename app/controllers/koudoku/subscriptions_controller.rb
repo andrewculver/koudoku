@@ -125,7 +125,10 @@ module Koudoku
 
     def create
 
-      @subscription = ::Subscription.new(subscription_params)
+      all_subscription_params = subscription_params.to_hash
+      all_subscription_params[:rewardful_id] = params[:referral] if params[:referral]
+
+      @subscription = ::Subscription.new(all_subscription_params)
       @subscription.subscription_owner = @owner
       @subscription.coupon_code = session[:koudoku_coupon_code]
 
@@ -133,7 +136,11 @@ module Koudoku
         flash[:notice] = after_new_subscription_message
         redirect_to after_new_subscription_path
       else
-        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+
+        ## commenting this out because the model callbacks are actually
+        ## providing the error message we need here from stripe.
+        # flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+
         render :new
       end
     end
@@ -152,12 +159,17 @@ module Koudoku
     end
 
     def update
-      if @subscription.update_attributes(subscription_params)
-        flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
-        redirect_to owner_subscription_path(@owner, @subscription)
-      else
-        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
-        render :edit
+      begin
+        if @subscription.update_attributes(subscription_params)
+          flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
+          redirect_to owner_subscription_path(@owner, @subscription)
+        else
+          flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+          render :edit
+        end
+      rescue Exception => e
+        flash[:error] = I18n.t('koudoku.failure.plan_change_needs_updated_card', :error => e.message)
+        redirect_to edit_owner_subscription_path(@owner, @subscription, update: 'card')
       end
     end
 
@@ -166,7 +178,7 @@ module Koudoku
 
       # If strong_parameters is around, use that.
       if defined?(ActionController::StrongParameters)
-        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four)
+        params.require(:subscription).permit(:plan_id, :stripe_id, :current_price, :credit_card_token, :card_type, :last_four, :link_mink_id)
       else
         # Otherwise, let's hope they're using attr_accessible to protect their models!
         params[:subscription]

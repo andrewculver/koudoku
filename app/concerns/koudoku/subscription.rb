@@ -67,11 +67,20 @@ module Koudoku::Subscription
 
             begin
               raise Koudoku::NilCardToken, "No card token received. Check for JavaScript errors breaking Stripe.js on the previous page." unless credit_card_token.present?
+
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
-                card: credit_card_token # obtained with Stripe.js
+                card: credit_card_token, # obtained with Stripe.js
+                metadata: subscription_owner_metadata
               }
+
+              # If the class we're being included in supports Rewardful ..
+              if respond_to? :rewardful_id
+                if rewardful_id.present?
+                  customer_attributes[:metadata] = {referral: rewardful_id}
+                end
+              end
 
               # If the class we're being included in supports coupons ..
               if respond_to? :coupon
@@ -86,12 +95,31 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+
+              subscription_attributes = {
+                customer: customer.id,
+                items:[
+                  {
+                    plan: self.plan.stripe_id,
+                    quantity: subscription_owner_quantity
+                  }
+                ],
+                trial_from_plan: true
+              }
+
+              # If the class we're being included in supports Link Mink ..
+              if respond_to? :link_mink_id
+                if link_mink_id.present?
+                  subscription_attributes[:metadata] = {identifier: link_mink_id}
+                end
+              end
+
+              Stripe::Subscription.create(subscription_attributes)
 
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
               card_was_declined
-              return false
+              throw :abort
             end
 
             # store the customer id.
@@ -176,11 +204,19 @@ module Koudoku::Subscription
   def subscription_owner_description
     # assuming owner responds to name.
     # we should check for whether it responds to this or not.
-    "#{subscription_owner.try(:name) || subscription_owner.try(:id)}"
+    "#{subscription_owner.try(:billing_name) || subscription_owner.try(:name) || subscription_owner.try(:id)}"
   end
 
   def subscription_owner_email
-    "#{subscription_owner.try(:email)}"
+    "#{subscription_owner.try(:formatted_email_address) || subscription_owner.try(:email)}"
+  end
+
+  def subscription_owner_metadata
+    subscription_owner.try(:stripe_metadata) || {}
+  end
+
+  def subscription_owner_quantity
+    subscription_owner.try(:subscription_quantity) || 1
   end
 
   def changing_plans?
