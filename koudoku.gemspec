@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails"
   s.add_dependency "stripe"
-  s.add_dependency "stripe_event"
+  s.add_dependency "stripe_event", ">= 2.2.0"
   s.add_dependency "bluecloth"
 
   s.add_development_dependency "jquery-rails"
