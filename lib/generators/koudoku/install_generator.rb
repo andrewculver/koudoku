@@ -53,6 +53,10 @@ module Koudoku
       # Install the pricing table.
       copy_file "app/views/koudoku/subscriptions/_social_proof.html.erb"
 
+      # Enable Koudoku helpers
+      inject_into_class "app/helpers/application_helper.rb", ApplicationHelper,
+                        "# Added by Koudoku.\n include Koudoku::ApplicationHelper\n\n"
+
       # Add webhooks to the route.
 
       route <<-RUBY
