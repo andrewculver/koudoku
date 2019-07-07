@@ -1,0 +1,57 @@
+# Translation by Javier Sanz (http://twitter.com/jsanzloz)
+
+es-ES:
+  koudoku:
+    confirmations:
+      feature_depends_on_devise: "Esta funcion precisa de la función Devise para que funcione."
+      subscription_cancelled: "Ha cancelado su suscripción con éxito"
+      subscription_updated: "Ha actualizado su suscripción con éxito."
+      subscription_upgraded: "La actualización se ha realizado correctamente."
+    failure:
+      problem_processing_transaction: "Ocurrió un problema durante el proceso"
+      unauthorized: "No está autorizado para realizar esta acción"
+    plan_intervals:
+      month: "mes"
+      year: "año"
+      week: "semana"
+      6month: "6 meses"
+      3month: "3 meses"
+    plan_difference:
+      downgrade: "Elegir un plan inferior"
+      selected: "Selecionado"
+      start_trial: "Comenzar prueba"
+      upgrade: "Elegir un plan superior"
+    payment:
+      cancel: "Cancelar"
+      card_number: "Número de tarjeta de crédito"
+      card_on_file_with_last_four: "La tarjeta de crédito de su cuenta termina con %{last_four}."
+      cvc: "CVC"
+      expiration: "Fecha de caducidad (MM/YYYY)"
+      payment_information: "Información de pago"
+      save_billing_info: "Guardar información de facturación"
+      upgrade_account: "Actualice su cuenta"
+      update_payment_information: "Actualizar los informes de facturación"
+    social_proof:
+      testimonial1:
+        person: "Persona, Compañía"
+        quote: "\"Un ejemplo de declaración\""
+      testimonial2:
+        person: "Persona, Compañía"
+        quote: "\"¡Uno de los mejores servicios que he probado!\""
+      testimonial3:
+        person: "Persona, Compañía"
+        quote: "\"Volvería a repetir, ¡vuestro servicio es genial!\""
+    subscriptions:
+      cancel_your_subscription: "Cancelar suscripción"
+      cancel_your_subscription_note_html: "Usted también puede %{link}."
+      choose_other_plan: "Elegir un plan diferente"
+      choose_plan: "Elija un plan diferente"
+      free_trial_for_days: "%{days} días de prueba"
+      no_subscription: "No hay ninguna suscripción activa"
+      not_subscribed_to_plan: "No tiene un plan de pago seleccionado."
+      sign_up: "Registrarse"
+      start_trial: "Comenzar periodo de prueba"
+      subscribed: "Su suscripción acaba de comenzar"
+      subscribed_to_plan: "Está suscrito al plan %{plan}."
+      upgrade_your_account: "Actualización de su cuenta"
+      which_plan_is_best: "¿Cuál es el plan que más le conviene?"
