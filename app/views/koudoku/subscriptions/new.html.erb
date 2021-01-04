@@ -1,1 +1,1 @@
-<%= render 'card', title: (Koudoku.free_trial? ? t('koudoku.subscriptions.start_trial') : t('koudoku.subscriptions.upgrade_your_account')), url: owner_subscriptions_path(@owner) %>
+<%= render 'card', title: (Koudoku.free_trial? ? t('koudoku.subscriptions.start_trial') : t('koudoku.subscriptions.upgrade_your_account')), url: koudoku.owner_subscriptions_path(@owner) %>

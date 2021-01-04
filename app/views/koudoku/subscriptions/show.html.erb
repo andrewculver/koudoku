@@ -1,15 +1,15 @@
 <% if @subscription.plan.present? %>
   <h2><%= t('koudoku.subscriptions.subscribed') %></h2>
   <p><%= t('koudoku.subscriptions.subscribed_to_plan', :plan => @subscription.plan.name) %></p>
-  <%= link_to t('koudoku.subscriptions.choose_other_plan'), edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
+  <%= link_to t('koudoku.subscriptions.choose_other_plan'), koudoku.edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
 <% else %>
   <h2><%= t('koudoku.subscriptions.no_subscription') %></h2>
   <p><%= t('koudoku.subscriptions.not_subscribed_to_plan') %></p>
-  <%= link_to t('koudoku.subscriptions.choose_plan'), edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
+  <%= link_to t('koudoku.subscriptions.choose_plan'), koudoku.edit_owner_subscription_path(@owner, @subscription), class: 'btn' %>
 <% end %>
 
 <br><br>
 
 <h4><%= t('koudoku.payment.payment_information') %></h4>
 <p><%= t('koudoku.payment.card_on_file_with_last_four', :last_four => @subscription.last_four) %></p>
-<%= link_to t('koudoku.payment.update_payment_information'), edit_owner_subscription_path(@owner, @subscription, update: 'card'), class: 'btn' %>
+<%= link_to t('koudoku.payment.update_payment_information'), koudoku.edit_owner_subscription_path(@owner, @subscription, update: 'card'), class: 'btn' %>

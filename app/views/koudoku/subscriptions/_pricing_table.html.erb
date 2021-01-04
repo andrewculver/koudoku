@@ -10,17 +10,17 @@
               <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.subscriptions.sign_up'), koudoku.new_subscription_path(plan: plan.id), class: "btn btn-success btn-large" %>
             <% elsif @subscription.persisted? %>
               <% if @subscription.plan == plan %>
-                <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
+                <%= form_for @subscription, url: koudoku.owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.submit t('koudoku.plan_difference.selected'), class: "btn btn-large", disabled: 'disabled' %>
                 <% end %>
               <% else %>
-                <%= form_for @subscription, url: owner_subscription_path(@owner, @subscription) do |f| %>
+                <%= form_for @subscription, url: koudoku.owner_subscription_path(@owner, @subscription) do |f| %>
                   <%= f.hidden_field :plan_id, value: plan.id %>
                   <%= f.submit @subscription.describe_difference(plan), class: "btn btn-success btn-large" %>
                 <% end %>
               <% end %>
             <% else %>
-              <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.plan_difference.upgrade'), new_owner_subscription_path(@owner, plan: plan.id), class: "btn btn-success btn-large" %>
+              <%= link_to Koudoku.free_trial? ? t('koudoku.plan_difference.start_trial') : t('koudoku.plan_difference.upgrade'), koudoku.new_owner_subscription_path(@owner, plan: plan.id), class: "btn btn-success btn-large" %>
             <% end %>
           </div>
           <ul class="features">
