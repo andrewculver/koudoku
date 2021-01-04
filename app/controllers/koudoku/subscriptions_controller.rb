@@ -16,25 +16,24 @@ module Koudoku
 
     def load_owner
       unless params[:owner_id].nil?
-        if current_owner.present?
-
+        if koudoku_subscription_owner.present?
           # we need to try and look this owner up via the find method so that we're
           # taking advantage of any override of the find method that would be provided
           # by older versions of friendly_id. (support for newer versions default behavior
           # below.)
 
-          searched_owner = current_owner.class.find(params[:owner_id]) rescue nil
+          searched_owner = koudoku_subscription_owner.class.find(params[:owner_id]) rescue nil
 
           # if we couldn't find them that way, check whether there is a new version of
           # friendly_id in place that we can use to look them up by their slug.
           # in christoph's words, "why?!" in my words, "warum?!!!"
           # (we debugged this together on skype.)
-          if searched_owner.nil? && current_owner.class.respond_to?(:friendly)
-            searched_owner = current_owner.class.friendly.find(params[:owner_id]) rescue nil
+          if searched_owner.nil? && koudoku_subscription_owner.class.respond_to?(:friendly)
+            searched_owner = koudoku_subscription_owner.class.friendly.find(params[:owner_id]) rescue nil
           end
 
-          if current_owner.try(:id) == searched_owner.try(:id)
-            @owner = current_owner
+          if koudoku_subscription_owner.try(:id) == searched_owner.try(:id)
+            @owner = koudoku_subscription_owner
           else
             return unauthorized
           end
@@ -50,7 +49,7 @@ module Koudoku
 
     def load_subscription
       ownership_attribute = :"#{Koudoku.subscriptions_owned_by}_id"
-      @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
+      @subscription = ::Subscription.where(ownership_attribute => koudoku_subscription_owner.id).find_by_id(params[:id])
 
       # also, if cancan methods are available, we should use that to authorize.
       if defined?(:can?)
@@ -62,7 +61,7 @@ module Koudoku
 
     # the following three methods allow us to show the pricing table before someone has an account.
     # by default these support devise, but they can be overriden to support others.
-    def current_owner
+    def koudoku_subscription_owner
       # e.g. "self.current_user"
       send "current_#{Koudoku.subscriptions_owned_by}"
     end
@@ -82,8 +81,8 @@ module Koudoku
     def index
 
       # don't bother showing the index if they've already got a subscription.
-      if current_owner and current_owner.subscription.present?
-        redirect_to koudoku.edit_owner_subscription_path(current_owner, current_owner.subscription)
+      if koudoku_subscription_owner and koudoku_subscription_owner.subscription.present?
+        redirect_to koudoku.edit_owner_subscription_path(koudoku_subscription_owner, koudoku_subscription_owner.subscription)
       end
 
       # Don't prep a subscription unless a user is authenticated.
@@ -101,8 +100,8 @@ module Koudoku
         if defined?(Devise)
 
           # by default these methods support devise.
-          if current_owner
-            redirect_to new_owner_subscription_path(current_owner, plan: params[:plan])
+          if koudoku_subscription_owner
+            redirect_to new_owner_subscription_path(koudoku_subscription_owner, plan: params[:plan])
           else
             redirect_to_sign_up
           end
