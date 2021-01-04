@@ -88,7 +88,7 @@ module Koudoku
       # Don't prep a subscription unless a user is authenticated.
       unless no_owner?
         # we should also set the owner of the subscription here.
-        @subscription = ::Subscription.new({Koudoku.owner_id_sym => @owner.id})
+        @subscription = ::Subscription.new({Koudoku.owner_foreign_key => @owner.id})
         @subscription.subscription_owner = @owner
       end
 
