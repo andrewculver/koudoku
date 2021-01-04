@@ -95,8 +95,11 @@ module Koudoku::Subscription
             end
 
             # store the customer id.
+            card = customer.sources.retrieve(customer.default_source)
+
             self.stripe_id = customer.id
-            self.last_four = customer.sources.retrieve(customer.default_source).last4
+            self.last_four = card.last4
+            self.card_type = card.brand
 
             finalize_new_subscription!
             finalize_upgrade!
@@ -127,7 +130,10 @@ module Koudoku::Subscription
         customer.save
 
         # update the last four based on this new card.
-        self.last_four = customer.sources.retrieve(customer.default_source).last4
+        card = customer.sources.retrieve(customer.default_source)
+
+        self.last_four = card.last4
+        self.card_type = card.brand
         finalize_card_update!
 
       end
